@@ -76,59 +76,24 @@ element:unfocus() -- unfocuses element
 ---------------
 
 
-# Immediates:
-Immediates are regular elements that have no state.<br/>
-Great for elements that pop in and out of existance all the time.
-(EG, popups, toasts, info-boxes)
-
-Since Immediate elements have no state,
-we don't need to handle their creation/deletion;
-we can just render them directly.
-```lua
-local Popup = LUI.ImmediateElement()
-
-function Popup:render(region, args)
-    love.graphics.print(args.text, region.x, region.y)
-end
-```
-Rendering:
-```lua
-function MyElem:render(region)
-    -- ImmediateElements cannot be instantiated, so
-    -- we must render them statically:
-    Popup:render(region:pad(20), {
-        text = "hello"
-    })
-end
-```
-
-TODO ^^^ Is there any point in this?
-How is this different from just calling a function?
-Isn't this just an overcomplicated way to call a function...?
-Do some thinking.
-
-If we think of ANY justification to keep Child elements,
-then we should keep them.
-Else, get rid of them.
-
-
----------------
-
-
-
 
 # Scenes:
 ```lua
 local scene = LUI.Scene()
 
 -- callbacks to call:
-scene:mousepressed(x, y, button)
+local consumed = scene:mousepressed(x, y, button)
 scene:mousereleased(x, y, button)
 
-scene:textinput(txt)
+local consumed = scene:textinput(txt)
 
-scene:keypressed(key, scancode)
+local consumed = scene:keypressed(key, scancode)
 scene:keyreleased(key, scancode)
+
+--[[
+    `consumed` boolean checks if the input was consumed or not.
+    Useful for locking mouse/keyboard inputs.
+]]
 
 ```
 
