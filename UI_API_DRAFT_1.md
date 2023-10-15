@@ -12,6 +12,7 @@ function Elem:init(args)
     self.button = Button(self, {})
     self.input = TextInput(self)
     -- we can put any elements we want here
+    self.text = ""
 end
 
 function Elem:render(region)
@@ -33,11 +34,25 @@ function Elem:onEndHover(mx, my)
 end
 
 function Elem:onClick(mx, my, button)
+    self:focus()
     print("element clicked")
+end
+
+function Elem:onMousemoved(x, y, dx, dy, istouch)
+    if self:isFocused() and love.mouse.isDown(1) then
+        -- We could use this for a scroll-bar!
+    end
 end
 
 function Elem:onClickChild(child, mx, my, button)
     print("A child of this element has been clicked!")
+end
+
+function Elem:onTextinput(text)
+    if self:isFocused() then
+        -- only input text if this elem is focused!
+        self.text = self.text + text
+    end
 end
 ```
 
@@ -49,16 +64,26 @@ element:isHovered() -- true/false whether element is hovered by ptr
 element:isFocused() -- true/false whether element is focused
 -- Think like, a text input box ready to input text.
 
-element:focus() -- focuses an element. All elements in the root
+
+element:focus() -- focuses an element.
+-- All elements in the scene will be unfocused, except this one.
+
 element:unfocus() -- unfocuses element
 ```
 
 
 
+---------------
+
+
 # Immediates:
-Immediates are just like regular elements, but they have no state,
-and they don't need to be stored anywhere.<br/>
-(Useful for popups or toasts.)
+Immediates are regular elements that have no state.<br/>
+Great for elements that pop in and out of existance all the time.
+(EG, popups, toasts, info-boxes)
+
+Since Immediate elements have no state,
+we don't need to handle their creation/deletion;
+we can just render them directly.
 ```lua
 local Popup = LUI.ImmediateElement()
 
@@ -76,6 +101,18 @@ function MyElem:render(region)
     })
 end
 ```
+
+TODO ^^^ Is there any point in this?
+How is this different from just calling a function?
+Isn't this just an overcomplicated way to call a function...?
+Do some thinking.
+
+If we think of ANY justification to keep Child elements,
+then we should keep them.
+Else, get rid of them.
+
+
+---------------
 
 
 
