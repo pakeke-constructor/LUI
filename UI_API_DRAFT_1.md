@@ -15,7 +15,7 @@ function Elem:init(args)
     self.text = ""
 end
 
-function Elem:render(region)
+function Elem:onRender(region)
     love.graphics.rectangle("line", region:get())
 
     local left, right = region:splitHorizontal(0.4, 0.6)
@@ -89,6 +89,8 @@ local consumed = scene:textinput(txt)
 
 local consumed = scene:keypressed(key, scancode)
 scene:keyreleased(key, scancode)
+
+scene:draw(x,y,w,h)
 
 --[[
     `consumed` boolean checks if the input was consumed or not.
