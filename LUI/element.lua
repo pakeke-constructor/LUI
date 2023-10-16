@@ -7,9 +7,18 @@ local util = require(path .. ".util")
 local Element = {}
 
 
+local function dispatchToChildren(self, funcName, ...)
+    for _, child in ipairs(self.children) do
+        child[funcName](child, ...)
+    end
+end
+
+
+
 function Element:setup()
     -- called on initialization
     self.children = {}
+    self.parent = nil
     self.view = {x=0,y=0,w=0,h=0} -- last seen view
     self.focused = false
     self.hovered = false
@@ -17,6 +26,8 @@ function Element:setup()
         [button] -> true/false
         whether this element is being clicked on by a mouse button
     ]]}
+
+    self.focusedChild = nil -- only used by root elements
 end
 
 
@@ -47,6 +58,7 @@ function Element:render(x,y,w,h)
     end
 
     util.tryCall(self.onRender, self, x,y,w,h)
+    dispatchToChildren(self, "render", x,y,w,h)
 
     if useStencil then
         love.graphics.setStencilTest()
@@ -79,9 +91,7 @@ function Element:mousereleased(mx, my, button, istouch, presses)
     util.tryCall(self.onClickRelease, self, mx, my, button, istouch, presses)
     self.beingClickedOn[button] = true
 
-    for _, child in ipairs(self.children) do
-        child:mousereleased(mx, my, button, istouch, presses)
-    end
+    dispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
 end
 
 
@@ -94,61 +104,108 @@ local function updateHover(self, mx, my)
         end
     else -- not being hovered:
         if self:contains(mx, my) then
-            util.tryCall(self.onEndHover, self, mx, my)
+            util.tryCall(self.onStartHover, self, mx, my)
             self.hovered = true
         end
     end
 end
 
 
-local DRAG_BUTTON = 1
 
 function Element:mousemoved(mx, my, dx, dy, istouch)
-    if self.beingClickedOn[DRAG_BUTTON] then
-        -- this element is being dragged!
-        util.tryCall(self.onDrag, self, mx, my, dx, dy, istouch)
-    end
+    util.tryCall(self.onMouseMoved, self, mx, my, dx, dy, istouch)
 
     updateHover(self, mx, my)
+    dispatchToChildren(self, "mousemoved", mx, my, dx, dy, istouch)
+end
 
-    for _, child in ipairs(self.children) do
-        child:mousemoved(mx, my, dx, dy, istouch)
+
+
+function Element:keypressed(key, scancode, isrepeat)
+    util.tryCall(self.onKeyPress, self, key, scancode, isrepeat)
+    dispatchToChildren(self, "keypressed", key, scancode, isrepeat)
+end
+
+
+function Element:keyreleased(key, scancode)
+    util.tryCall(self.onKeyRelease, self, key, scancode)
+    dispatchToChildren(self, "keyreleased", key, scancode)
+end
+
+
+function Element:textinput(text)
+    util.tryCall(self.onTextInput, self, text)
+    dispatchToChildren(self, "textinput", text)
+end
+
+
+
+local function listDelete(arr, x)
+    for i=1, #arr do
+        if arr[i] == x then
+            table.remove(arr, i)
+            return
+        end
+    end
+end
+
+function Element:delete()
+    local parent = self.parent
+    if parent then
+        listDelete(parent.children, self)
     end
 end
 
 
 
-
 local MAX_DEPTH = 10000
 
-function Element:getRootScene()
-    -- gets the rootScene ancestor of this element
+function Element:getRoot()
+    -- gets the root ancestor of this element
     local elem = self
     for _=1,MAX_DEPTH do
         if elem.parent then
             elem = elem.parent
         else
-            return elem -- its the rootScene!
+            return elem -- its the root!
         end
     end
     error("max depth reached in element heirarchy (child is a parent of itself?)")
 end
 
 
+
+local function setRootFocus(self, focus)
+    local root = self:getRoot()
+    local old = root.focusedChild
+    if old then
+        -- unfocus old element
+        root.focusedChild = nil
+        old:unfocus()
+    end
+    root.focusedChild = focus
+end
+
+
 function Element:focus()
-    local rootScene = self:getRootScene()
-    rootScene:_setFocus(self)
+    if self.focused then
+        return -- idempotency
+    end
+    setRootFocus(self, self)
     self.focused = true
     util.tryCall(self.onFocus, self)
 end
 
 
 function Element:unfocus()
-    local rootScene = self:getRootScene()
-    rootScene:_setFocus(self)
+    if not self.focused then
+        return -- idempotency
+    end
+    setRootFocus(self, nil)
     self.focused = false
     util.tryCall(self.onUnfocus, self)
 end
+
 
 
 function Element:isFocused()

@@ -4,7 +4,12 @@
 # API DRAFT 1:
 
 
+----------
+
+
 # Elements:
+
+Functions we can override:
 ```lua
 local Elem = LUI.ElementClass()
 
@@ -43,21 +48,18 @@ function Elem:onClickRelease(mx, my, button)
 end
 
 
-function Elem:onDrag(x, y, dx, dy)
-    -- called when the user drags the element with mouse-button 1
-    print("element dragged")
-end
+function Elem:onKeyPress(key,scancode) end
+function Elem:onKeyRelease(key,scancode) end
 
 
-
-function Elem:onMousemoved(x, y, dx, dy, istouch)
+function Elem:onMouseMoved(x, y, dx, dy, istouch)
     if self:isFocused() and love.mouse.isDown(1) then
         -- We could use this for a scroll-bar!
     end
 end
 
 
-function Elem:onTextinput(text)
+function Elem:onTextInput(text)
     if self:isFocused() then
         -- only input text if this elem is focused!
         self.text = self.text + text
@@ -66,7 +68,7 @@ end
 ```
 
 ```lua
-local element = Elem(parentElement or scene)
+local element = Elem(parentElement)
 
 element:isHovered() -- true/false whether element is hovered by ptr
 
@@ -75,38 +77,22 @@ element:isFocused() -- true/false whether element is focused
 
 
 element:focus() -- focuses an element.
--- Only one element can be focused per scene.
+-- Only one element can be focused per heirarchy.
+-- (Therefore, this call will un-focus anything else in the heirarchy.)
 
 element:unfocus() -- unfocuses element
 ```
 
-
-
 ---------------
 
-
-
-# Scenes:
 ```lua
-local scene = LUI.Scene()
-
--- callbacks to call:
-local consumed = scene:mousepressed(x, y, button)
-scene:mousereleased(x, y, button)
-
-local consumed = scene:textinput(txt)
-
-local consumed = scene:keypressed(key, scancode)
-scene:keyreleased(key, scancode)
+local element = Elem("ROOT")
 --[[
-    `consumed` boolean checks if the input was consumed or not.
-    Useful for locking mouse/keyboard inputs.
+    Creates a root element.
+
+    It's a common idiom to have the root element represent
+    the current scene.
 ]]
-
-scene:draw(x,y,w,h)
-
-
-scene:_setFocus(elem) -- focuses an element in a scene
--- (This shouldn't need to be called)
 ```
+
 
