@@ -9,7 +9,9 @@ local Element = {}
 
 local function dispatchToChildren(self, funcName, ...)
     for _, child in ipairs(self.children) do
-        child[funcName](child, ...)
+        if child:shouldBeActive() then
+            child[funcName](child, ...)
+        end
     end
 end
 
@@ -32,6 +34,12 @@ end
 
 
 function Element:shouldUseStencil()
+    -- to be overridden
+    return true
+end
+
+
+function Element:shouldBeActive()
     -- to be overridden
     return true
 end

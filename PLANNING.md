@@ -30,7 +30,15 @@ Ok, we want our own UI library.
     - How do we do mouse stuff?
     - How do we do text input and keyboard stuff?
 
+what happens for temporary elements?
+Ie. elements that come and go?
+```lua
+for k,v in ipai
+```
 
 
+# WARNING: 
+ With this root stuff:
+Make sure we handle overlapping clicks on elements!!!
 
 
