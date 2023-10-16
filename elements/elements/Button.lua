@@ -4,8 +4,7 @@ local Button = LUI.Element()
 
 
 
-function Button:init(a,b,c)
-    print("inited:", a,b,c)
+function Button:init()
     self.count = 0
 end
 

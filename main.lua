@@ -1,5 +1,4 @@
 
-
 _G.Region = require("examples.lib.region")
 _G.LUI = require("LUI")
 
@@ -7,7 +6,7 @@ local elements = require("elements")
 _G.elements = elements
 
 
-local m = elements.Menu(false)
+local m = elements.Menu(false, "hi", {}, 69)
 
 
 local function getScreenView()

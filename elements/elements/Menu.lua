@@ -3,7 +3,7 @@
 local Menu = LUI.Element()
 
 
-function Menu:init()
+function Menu:init(a,b,c,d)
     self.button = elements.Button(self)
 end
 
