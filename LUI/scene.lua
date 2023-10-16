@@ -41,6 +41,48 @@ function Scene:focus(element)
 end
 
 
+function Scene:render()
+    for i=#self.elements, 1, -1 do
+        local elem = self.elements[i]
+        elem:render(elem:getView())
+    end
+end
+
+
+local FOCUS_BUTTON = 1
+
+function Scene:mousepressed(mx, my, button, istouch, presses)
+    for i=#self.elements, 1, -1 do
+        local elem = self.elements[i]
+        if elem:contains(mx, my) then
+            elem:mousepressed(mx, my, button, istouch, presses)
+            if button == FOCUS_BUTTON then
+                self:focus(elem)
+            end
+        end
+    end
+end
+
+--[[
+    TODO: Do the rest of these.
+]]
+function Element:mousereleased(mx, my, button, istouch, presses)
+end
+
+function Element:mousemoved(mx, my, dx, dy, istouch)
+end
+
+function Element:keypressed(key, scancode, isrepeat)
+end
+
+function Element:keyreleased(key, scancode)
+end
+
+function Element:textinput(text)
+end
+
+
+
 
 return Scene
 

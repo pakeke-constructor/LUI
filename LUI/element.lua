@@ -59,6 +59,12 @@ function Element:setView(x,y,w,h)
 end
 
 
+function Element:getView()
+    local view = self._view
+    return view.x,view.y,view.w,view.h
+end
+
+
 
 
 function Element:render(x,y,w,h)
@@ -160,7 +166,7 @@ end
 function Element:delete()
     local parent = self._parent
     if parent then
-        listDelete(parent._children, self)
+        util.listDelete(parent._children, self)
     end
 end
 
@@ -224,8 +230,7 @@ end
 
 function Element:contains(x,y)
     -- returns true if (x,y) is inside element bounds
-    local view = self._view
-    local X,Y,W,H = view.x,view.y,view.w,view.h
+    local X,Y,W,H = self:getView()
     return  X <= x and x <= (X+W)
         and Y <= y and y <= (Y+H) 
 end
