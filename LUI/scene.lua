@@ -2,36 +2,45 @@
 
 --[[
 
-Element manager functionality.
+Scene object
 
-Manages the current elements on the stack.
+Scenes contain elements
 
 ]]
 
 
-local manager = {}
+
+local path = (...):gsub('%.[^%.]+$', '')
+
+local util = require(path .. ".util")
+
+local Scene = util.Class()
 
 
-local beginFrameCalled = false
-
-local stack = {}
-
-function manager.push(element)
-    -- pushes an element onto the stack.
-    -- Elements should be automatically pushed after a call to :render
-    assert(beginFrameCalled, "LUI.begin() needs to be called before rendering")
-    table.insert(stack, element)
+function Scene:init()
+    self.elements = {}
 end
 
 
-function manager.clearStack()
-    stack = {}
+function Scene:addElement(element)
+    table.insert(self.elements, element)
 end
 
 
-function manager.getStack()
-    return stack
+
+function Scene:removeElement(element)
+    -- WARNING: This is O(n^2)
+    util.listDelete(self.elements, element)
 end
 
 
-return manager
+function Scene:focus(element)
+    -- WARNING: This is O(n^2)
+    util.listDelete(self.elements, element)
+    table.insert(self.elements, element)
+end
+
+
+
+return Scene
+

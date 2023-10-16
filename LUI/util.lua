@@ -11,6 +11,22 @@ function util.tryCall(func, ...)
 end
 
 
+function util.find(arr, elem)
+    for i=1, #arr do
+        if arr[i] == elem then
+            return i
+        end
+    end
+end
+
+
+function util.listDelete(arr, elem)
+    -- todo: this is bad, O(n^2)
+    local i = util.find(arr, elem)
+    table.remove(arr, i)
+end
+
+
 function util.Class()
     local Class = {}
     local mt = {__index = Class}

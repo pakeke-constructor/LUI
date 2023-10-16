@@ -2,7 +2,6 @@
 local path = (...):gsub('%.[^%.]+$', '')
 
 local util = require(path .. ".util")
-local manager = require(path .. ".manager")
 
 
 local Element = {}
@@ -51,9 +50,6 @@ end
 
 
 function Element:render(x,y,w,h)
-    if self._isRoot then
-        manager.push(self)
-    end
     local useStencil = self:shouldUseStencil()
     if useStencil then
         local function stencil()
@@ -148,15 +144,6 @@ function Element:textinput(text)
 end
 
 
-
-local function listDelete(arr, x)
-    for i=1, #arr do
-        if arr[i] == x then
-            table.remove(arr, i)
-            return
-        end
-    end
-end
 
 function Element:delete()
     local parent = self._parent
