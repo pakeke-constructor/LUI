@@ -49,6 +49,27 @@ function Scene:render()
 end
 
 
+local function getFocused(self)
+    local len = #self.elements
+    return self.elements[len]
+end
+
+local function tryCallFocused(self, method, ...)
+    local focused = getFocused(self)
+    if focused then
+        focused[method](focused, ...)
+    end
+end
+
+local function callForAll(self, method, ...)
+    for i=#self.elements, 1, -1 do
+        local elem = self.elements[i]
+        elem[method](elem, ...)
+    end
+end
+
+
+
 local FOCUS_BUTTON = 1
 
 function Scene:mousepressed(mx, my, button, istouch, presses)
@@ -66,19 +87,24 @@ end
 --[[
     TODO: Do the rest of these.
 ]]
-function Element:mousereleased(mx, my, button, istouch, presses)
+function Scene:mousereleased(mx, my, button, istouch, presses)
+    callForAll(self, "mousereleased", mx, my, button, istouch, presses)
 end
 
-function Element:mousemoved(mx, my, dx, dy, istouch)
+function Scene:mousemoved(mx, my, dx, dy, istouch)
+    callForAll(self, "mousemoved", mx, my, dx, dy, istouch)
 end
 
-function Element:keypressed(key, scancode, isrepeat)
+function Scene:keypressed(key, scancode, isrepeat)
+    tryCallFocused(self, "keypressed", key, scancode, isrepeat)
 end
 
-function Element:keyreleased(key, scancode)
+function Scene:keyreleased(key, scancode)
+    tryCallFocused(self, "keyreleased", key, scancode)
 end
 
-function Element:textinput(text)
+function Scene:textinput(text)
+    tryCallFocused(self, "textinput", text)
 end
 
 
