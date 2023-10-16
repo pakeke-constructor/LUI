@@ -39,14 +39,26 @@ end
 
 
 
+
 local function setView(self, x,y,w,h)
-    -- save the last view
+    -- set the view
     local view = self._view
     view.x = x
     view.y = y
     view.w = w
     view.h = h
 end
+
+
+function Element:setView(x,y,w,h)
+    --[[
+        the view can only be set explicitly by root elements
+    ]]
+    assert(self._isRoot, "Views can only be set explicitly by root elements")
+    setView(self, x,y,w,h)
+end
+
+
 
 
 function Element:render(x,y,w,h)

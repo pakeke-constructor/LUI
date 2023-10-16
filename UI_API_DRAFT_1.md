@@ -92,48 +92,42 @@ local element = Elem(false) -- Creates a root element.
 
 
 
-# Putting it all together:
+# Scene objects:
 
 --------------
 
 ```lua
 
 
+local scene = Scene()
+
 -- Adding elements:
-LUI.addElement(myElement)
-LUI.addElement(elem2)
+scene:addElement(myElement)
+scene:addElement(elem2)
 
 -- Removing elements:
+scene:removeElement(elem2)
 
 
 function love.draw()
-    LUI.begin()
-
-    myElement:render(x,y,w,h)
-    element2:render(x,y,w,h)
-    -- rendering an element will push it onto LUI's internal stack.
-    -- Stack elements will receive mousepressed/keypressed events.
-
-    -- Elements rendered last will have highest priority.
-
-    --[[
-        TODO:
-        Ok this is kinda bad.
-        we want our elements to be "ordered" internally,
-        and this system is having the ordering be done by the user.
-
-        For example, when we click an element, it gets pushed to the top
-        of the stack for the next frame.
-    ]]
+    scene:render()
 end
-
 
 function love.keypressed(key, sc, isrep)
-    local consumed = LUI.keypressed(key, sc, isrep)
+    local consumed = scene:keypressed(key, sc, isrep)
 end
-
-
-
 ```
 
+Important note:
+- We can only add an element to a scene if its a Root element!
+
+-----
+
+Idea:
+- Only poll keyboard/textinput to the "top" element in the stack.
+
+--------
+
+Things to think about:
+- How do we know when to "consume" keyboard input?
 
