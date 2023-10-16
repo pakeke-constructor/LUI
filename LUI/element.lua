@@ -2,13 +2,14 @@
 local path = (...):gsub('%.[^%.]+$', '')
 
 local util = require(path .. ".util")
+local manager = require(path .. ".manager")
 
 
 local Element = {}
 
 
 local function dispatchToChildren(self, funcName, ...)
-    for _, child in ipairs(self.children) do
+    for _, child in ipairs(self._children) do
         child[funcName](child, ...)
     end
 end
@@ -17,17 +18,18 @@ end
 
 function Element:setup()
     -- called on initialization
-    self.children = {}
-    self.parent = nil
-    self.view = {x=0,y=0,w=0,h=0} -- last seen view
-    self.focused = false
-    self.hovered = false
-    self.clickedOnBy = {--[[
+    self._children = {}
+    self._parent = nil
+    self._view = {x=0,y=0,w=0,h=0} -- last seen view
+    self._focused = false
+    self._hovered = false
+    self._isRoot = error("TODO: set this value somehow")
+    self._clickedOnBy = {--[[
         [button] -> true/false
         whether this element is being clicked on by a mouse button
     ]]}
 
-    self.focusedChild = nil -- only used by root elements
+    self._focusedChild = nil -- only used by root elements
 end
 
 
@@ -40,7 +42,7 @@ end
 
 local function setView(self, x,y,w,h)
     -- save the last view
-    local view = self.view
+    local view = self._view
     view.x = x
     view.y = y
     view.w = w
@@ -72,9 +74,9 @@ end
 function Element:mousepressed(mx, my, button, istouch, presses)
     -- should be called when mouse clicks on this element
     util.tryCall(self.onClick, self, mx, my, button, istouch, presses)
-    self.clickedOnBy[button] = true
+    self._clickedOnBy[button] = true
 
-    for _, child in ipairs(self.children) do
+    for _, child in ipairs(self._children) do
         if child:contains(mx, my) then
             child:mousepressed(mx, my, button, istouch, presses)
         end
@@ -84,12 +86,12 @@ end
 
 function Element:mousereleased(mx, my, button, istouch, presses)
     -- should be called when mouse is released ANYWHERE in the scene
-    if not self.clickedOnBy[button] then
+    if not self._clickedOnBy[button] then
         return -- This event doesn't concern this element
     end
     
     util.tryCall(self.onClickRelease, self, mx, my, button, istouch, presses)
-    self.clickedOnBy[button] = true
+    self._clickedOnBy[button] = true
 
     dispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
 end
@@ -97,15 +99,15 @@ end
 
 
 local function updateHover(self, mx, my)
-    if self.hovered then
+    if self._hovered then
         if not self:contains(mx, my) then
             util.tryCall(self.onEndHover, self, mx, my)
-            self.hovered = false
+            self._hovered = false
         end
     else -- not being hovered:
         if self:contains(mx, my) then
             util.tryCall(self.onStartHover, self, mx, my)
-            self.hovered = true
+            self._hovered = true
         end
     end
 end
@@ -150,9 +152,9 @@ local function listDelete(arr, x)
 end
 
 function Element:delete()
-    local parent = self.parent
+    local parent = self._parent
     if parent then
-        listDelete(parent.children, self)
+        listDelete(parent._children, self)
     end
 end
 
@@ -164,8 +166,8 @@ function Element:getRoot()
     -- gets the root ancestor of this element
     local elem = self
     for _=1,MAX_DEPTH do
-        if elem.parent then
-            elem = elem.parent
+        if elem._parent then
+            elem = elem._parent
         else
             return elem -- its the root!
         end
@@ -177,46 +179,46 @@ end
 
 local function setRootFocus(self, focus)
     local root = self:getRoot()
-    local old = root.focusedChild
+    local old = root._focusedChild
     if old then
         -- unfocus old element
-        root.focusedChild = nil
+        root._focusedChild = nil
         old:unfocus()
     end
-    root.focusedChild = focus
+    root._focusedChild = focus
 end
 
 
 function Element:focus()
-    if self.focused then
+    if self._focused then
         return -- idempotency
     end
     setRootFocus(self, self)
-    self.focused = true
+    self._focused = true
     util.tryCall(self.onFocus, self)
 end
 
 
 function Element:unfocus()
-    if not self.focused then
+    if not self._focused then
         return -- idempotency
     end
     setRootFocus(self, nil)
-    self.focused = false
+    self._focused = false
     util.tryCall(self.onUnfocus, self)
 end
 
 
 
 function Element:isFocused()
-    return self.focused
+    return self._focused
 end
 
 
 
 function Element:contains(x,y)
     -- returns true if (x,y) is inside element bounds
-    local view = self.view
+    local view = self._view
     local X,Y,W,H = view.x,view.y,view.w,view.h
     return  X <= x and x <= (X+W)
         and Y <= y and y <= (Y+H) 

@@ -6,8 +6,8 @@ local Element = require(path .. ".element")
 
 
 local function setParent(childElem, parentElem)
-    table.insert(parentElem.children, childElem)
-    childElem.parent = parentElem
+    table.insert(parentElem._children, childElem)
+    childElem._parent = parentElem
 end
 
 

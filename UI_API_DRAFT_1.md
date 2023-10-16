@@ -86,13 +86,32 @@ element:unfocus() -- unfocuses element
 ---------------
 
 ```lua
-local element = Elem("ROOT")
---[[
-    Creates a root element.
+local element = Elem(false) -- Creates a root element.
+```
 
-    It's a common idiom to have the root element represent
-    the current scene.
-]]
+
+
+
+# Putting it all together:
+
+--------------
+
+```lua
+
+function love.draw()
+    LUI.begin()
+
+    myElement:render(x,y,w,h)
+    myElement:render(x,y,w,h)
+end
+
+
+function love.keypressed(key, sc, isrep)
+    local consumed = LUI.keypressed(key, sc, isrep)
+end
+
+
+
 ```
 
 
