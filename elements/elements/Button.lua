@@ -10,7 +10,7 @@ function Button:init(a,b,c)
 end
 
 
-function Button:render(x,y,w,h)
+function Button:onRender(x,y,w,h)
     love.graphics.rectangle("line",x,y,w,h)
     love.graphics.print(tostring(self.count), x + 10, y + 10)
 end

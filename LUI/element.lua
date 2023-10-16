@@ -9,9 +9,7 @@ local Element = {}
 
 local function dispatchToChildren(self, funcName, ...)
     for _, child in ipairs(self.children) do
-        if child:shouldBeActive() then
-            child[funcName](child, ...)
-        end
+        child[funcName](child, ...)
     end
 end
 
@@ -39,11 +37,6 @@ function Element:shouldUseStencil()
 end
 
 
-function Element:shouldBeActive()
-    -- to be overridden
-    return true
-end
-
 
 local function setView(self, x,y,w,h)
     -- save the last view
@@ -66,7 +59,6 @@ function Element:render(x,y,w,h)
     end
 
     util.tryCall(self.onRender, self, x,y,w,h)
-    dispatchToChildren(self, "render", x,y,w,h)
 
     if useStencil then
         love.graphics.setStencilTest()
@@ -80,10 +72,10 @@ end
 function Element:mousepressed(mx, my, button, istouch, presses)
     -- should be called when mouse clicks on this element
     util.tryCall(self.onClick, self, mx, my, button, istouch, presses)
-    self.beingClickedOn[button] = true
+    self.clickedOnBy[button] = true
 
     for _, child in ipairs(self.children) do
-        if child:contains(mx, my) and child:shouldBeActive() then
+        if child:contains(mx, my) then
             child:mousepressed(mx, my, button, istouch, presses)
         end
     end
@@ -92,12 +84,12 @@ end
 
 function Element:mousereleased(mx, my, button, istouch, presses)
     -- should be called when mouse is released ANYWHERE in the scene
-    if not self.beingClickedOn[button] then
+    if not self.clickedOnBy[button] then
         return -- This event doesn't concern this element
     end
     
     util.tryCall(self.onClickRelease, self, mx, my, button, istouch, presses)
-    self.beingClickedOn[button] = true
+    self.clickedOnBy[button] = true
 
     dispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
 end

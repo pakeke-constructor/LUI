@@ -4,13 +4,10 @@ _G.Region = require("examples.lib.region")
 _G.LUI = require("LUI")
 
 local elements = require("elements")
-
-for k,v in pairs(elements) do
-    print(k,v)
-end
+_G.elements = elements
 
 
-local b = elements.Button(false)
+local m = elements.Menu(false)
 
 
 local function getScreenView()
@@ -19,11 +16,11 @@ end
 
 
 function love.draw()
-    b:render(getScreenView())
+    m:render(getScreenView())
 end
 
 
 function love.mousepressed(x,y,button,istouch)
-    b:mousepressed(x,y,button,istouch)
+    m:mousepressed(x,y,button,istouch)
 end
 

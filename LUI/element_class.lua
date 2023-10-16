@@ -40,9 +40,17 @@ local function initElement(elementClass, parent, ...)
 end
 
 
+local function noOverwrite(t,k,v)
+    if Element[k] then
+        error("Attempted to overwrite builtin method: " .. tostring(k))
+    end
+    rawset(t,k,v)
+end
+
 local ElementClass_mt = {
     __call = initElement,
-    __index = Element
+    __index = Element,
+    __newindex = noOverwrite
 }
 
 
