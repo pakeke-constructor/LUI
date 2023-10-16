@@ -38,15 +38,24 @@ function Elem:onClick(mx, my, button)
     print("element clicked")
 end
 
+function Elem:onClickRelease(mx, my, button)
+    print("element released!")
+end
+
+
+function Elem:onDrag(x, y, dx, dy)
+    -- called when the user drags the element with mouse-button 1
+    print("element dragged")
+end
+
+
+
 function Elem:onMousemoved(x, y, dx, dy, istouch)
     if self:isFocused() and love.mouse.isDown(1) then
         -- We could use this for a scroll-bar!
     end
 end
 
-function Elem:onClickChild(child, mx, my, button)
-    print("A child of this element has been clicked!")
-end
 
 function Elem:onTextinput(text)
     if self:isFocused() then
@@ -66,7 +75,7 @@ element:isFocused() -- true/false whether element is focused
 
 
 element:focus() -- focuses an element.
--- All elements in the scene will be unfocused, except this one.
+-- Only one element can be focused per scene.
 
 element:unfocus() -- unfocuses element
 ```
@@ -89,13 +98,15 @@ local consumed = scene:textinput(txt)
 
 local consumed = scene:keypressed(key, scancode)
 scene:keyreleased(key, scancode)
-
-scene:draw(x,y,w,h)
-
 --[[
     `consumed` boolean checks if the input was consumed or not.
     Useful for locking mouse/keyboard inputs.
 ]]
 
+scene:draw(x,y,w,h)
+
+
+scene:_setFocus(elem) -- focuses an element in a scene
+-- (This shouldn't need to be called)
 ```
 
