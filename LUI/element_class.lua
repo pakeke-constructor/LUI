@@ -13,12 +13,11 @@ end
 
 local function assertParentValid(parent)
     if not parent then
-        if parent == nil then
+        if parent ~= false then
             error("Element not given parent! (if this is a root element, pass in `nil`)")
         end
         return -- parent=false, therefore its a root element
     end
-
 
     if type(parent) ~= "table" or (not parent.render) then
         error("Parent wasn't valid LUI element: " .. tostring(parent))
@@ -27,14 +26,18 @@ end
 
 
 local function initElement(elementClass, parent, ...)
+    --[[
+        if `parent` is false, then the element is a root element.
+        `...` are just arbitrary user arguments passed in.
+    ]]
     assertParentValid(parent)
     local element = setmetatable({}, elementClass)
     if parent then
         setParent(element, parent)
     end
-    element:setup()
+    element:setup(not parent)
     if element.init then
-        element:init(parent, ...)
+        element:init(...)
     end
     return element
 end

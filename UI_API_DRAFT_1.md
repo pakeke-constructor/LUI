@@ -102,7 +102,11 @@ function love.draw()
     LUI.begin()
 
     myElement:render(x,y,w,h)
-    myElement:render(x,y,w,h)
+    element2:render(x,y,w,h)
+    -- rendering an element will push it onto LUI's internal stack.
+    -- Stack elements will receive mousepressed/keypressed events.
+
+    -- Elements rendered last will have highest priority.
 end
 
 

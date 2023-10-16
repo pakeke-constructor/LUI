@@ -16,14 +16,14 @@ end
 
 
 
-function Element:setup()
+function Element:setup(isRoot)
     -- called on initialization
+    self._isRoot = isRoot
     self._children = {}
     self._parent = nil
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
     self._hovered = false
-    self._isRoot = error("TODO: set this value somehow")
     self._clickedOnBy = {--[[
         [button] -> true/false
         whether this element is being clicked on by a mouse button
@@ -51,6 +51,9 @@ end
 
 
 function Element:render(x,y,w,h)
+    if self._isRoot then
+        manager.push(self)
+    end
     local useStencil = self:shouldUseStencil()
     if useStencil then
         local function stencil()
@@ -73,6 +76,9 @@ end
 
 function Element:mousepressed(mx, my, button, istouch, presses)
     -- should be called when mouse clicks on this element
+    if not self:contains(mx,my) then
+        return false
+    end
     util.tryCall(self.onClick, self, mx, my, button, istouch, presses)
     self._clickedOnBy[button] = true
 
@@ -81,6 +87,7 @@ function Element:mousepressed(mx, my, button, istouch, presses)
             child:mousepressed(mx, my, button, istouch, presses)
         end
     end
+    return true -- consumed!
 end
 
 
