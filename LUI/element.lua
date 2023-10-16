@@ -83,7 +83,7 @@ function Element:mousepressed(mx, my, button, istouch, presses)
     self.beingClickedOn[button] = true
 
     for _, child in ipairs(self.children) do
-        if child:contains(mx, my) then
+        if child:contains(mx, my) and child:shouldBeActive() then
             child:mousepressed(mx, my, button, istouch, presses)
         end
     end

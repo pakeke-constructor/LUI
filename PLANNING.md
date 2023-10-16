@@ -38,7 +38,7 @@ for k,v in ipai
 
 
 # WARNING: 
- With this root stuff:
+ With this root-element stuff:
 Make sure we handle overlapping clicks on elements!!!
 
 
