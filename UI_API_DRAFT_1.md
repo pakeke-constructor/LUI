@@ -98,6 +98,14 @@ local element = Elem(false) -- Creates a root element.
 
 ```lua
 
+
+-- Adding elements:
+LUI.addElement(myElement)
+LUI.addElement(elem2)
+
+-- Removing elements:
+
+
 function love.draw()
     LUI.begin()
 
@@ -107,6 +115,16 @@ function love.draw()
     -- Stack elements will receive mousepressed/keypressed events.
 
     -- Elements rendered last will have highest priority.
+
+    --[[
+        TODO:
+        Ok this is kinda bad.
+        we want our elements to be "ordered" internally,
+        and this system is having the ordering be done by the user.
+
+        For example, when we click an element, it gets pushed to the top
+        of the stack for the next frame.
+    ]]
 end
 
 
