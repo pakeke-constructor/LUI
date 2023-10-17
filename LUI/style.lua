@@ -8,6 +8,8 @@ local Style = util.Class()
 
 local DEFAULTS = {
     LINE_WIDTH = 2,
+    CORNER_RADIUS = 0,
+    FOREGROUND_COLOR = {0,0,0,1},
     BACKGROUND_COLOR = {1,1,1,1},
     OUTLINE_COLOR = {0.2,0.2,0.2,1},
     INNER_COLOR = {0.6,0.6,0.6,1},
@@ -32,16 +34,21 @@ end
 function Style:outline(x,y,w,h)
     self:setLineWidth()
     self:setColor("OUTLINE_COLOR")
-    love.graphics.rectangle("line",x,y,w,h)
+    love.graphics.rectangle("line",x,y,w,h,self:get("CORNER_RADIUS"))
 end
 
 
 function Style:rectangle(x,y,w,h)
     self:setLineWidth()
     self:setColor("BACKGROUND_COLOR")
-    love.graphics.rectangle("fill",x,y,w,h)
+    love.graphics.rectangle("fill",x,y,w,h,self:get("CORNER_RADIUS"))
     self:outline(x,y,w,h)
 end
 
+
+function Style:printf(...)
+  self:setColor("FOREGROUND_COLOR")
+  love.graphics.printf(...)
+end
 
 return Style
