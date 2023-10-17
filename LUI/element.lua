@@ -9,7 +9,9 @@ local Element = {}
 
 local function dispatchToChildren(self, funcName, ...)
     for _, child in ipairs(self._children) do
-        child[funcName](child, ...)
+        if child:isActive() then
+            child[funcName](child, ...)
+        end
     end
 end
 
@@ -22,6 +24,7 @@ function Element:setup(isRoot)
     self._parent = nil
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
+    self._active = false
     self._hovered = false
     self._clickedOnBy = {--[[
         [button] -> true/false
@@ -65,9 +68,21 @@ function Element:getView()
 end
 
 
+local function deactivateheirarchy(self)
+    self._active = false
+    for _, childElem in ipairs(self._children) do
+        deactivateheirarchy(childElem)
+    end
+end
+
+local function activate(self)
+    self._active = true
+end
 
 
 function Element:render(x,y,w,h)
+    deactivateheirarchy(self)
+    activate(self)
     local useStencil = self:shouldUseStencil()
     if useStencil then
         local function stencil()
@@ -97,7 +112,7 @@ function Element:mousepressed(mx, my, button, istouch, presses)
     self._clickedOnBy[button] = true
 
     for _, child in ipairs(self._children) do
-        if child:contains(mx, my) then
+        if child:contains(mx, my) and child:isActive() then
             child:mousepressed(mx, my, button, istouch, presses)
         end
     end
@@ -224,6 +239,24 @@ end
 
 function Element:isFocused()
     return self._focused
+end
+
+
+function Element:isActive()
+    --[[
+        returns whether an element is active or not.
+
+        If an element was :render()ed the previous frame,
+        then its active.
+    ]]
+    return self._active
+end
+
+
+
+function Element:isClickedOnBy(button)
+    -- returns true iff the element is clicked on by
+    return self._clickedOnBy[button]
 end
 
 

@@ -84,9 +84,8 @@ function Scene:mousepressed(mx, my, button, istouch, presses)
     end
 end
 
---[[
-    TODO: Do the rest of these.
-]]
+
+
 function Scene:mousereleased(mx, my, button, istouch, presses)
     callForAll(self, "mousereleased", mx, my, button, istouch, presses)
 end

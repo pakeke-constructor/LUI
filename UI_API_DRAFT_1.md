@@ -1,6 +1,5 @@
 
 
-
 # API DRAFT 1:
 
 
@@ -118,16 +117,19 @@ function love.keypressed(key, sc, isrep)
 end
 ```
 
-Important note:
+Important ideas:
 - We can only add an element to a scene if its a Root element!
 
------
+- Only poll keyboard/textinput to the "top" element in the scene stack.
+    - DONE
 
-Idea:
-- Only poll keyboard/textinput to the "top" element in the stack.
+- Elements auto-deactivated if they weren't rendered the prev frame.
+    Deactivated = unable to receive events or anything.
+
 
 --------
 
 Things to think about:
 - How do we know when to "consume" keyboard input?
+    - SOLN: Return `true` from :keypressed to consume.
 
