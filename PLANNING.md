@@ -32,9 +32,6 @@ Ok, we want our own UI library.
 
 what happens for temporary elements?
 Ie. elements that come and go?
-```lua
-for k,v in ipai
-```
 
 
 # WARNING: 

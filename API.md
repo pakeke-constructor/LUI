@@ -74,6 +74,8 @@ element:isHovered() -- true/false whether element is hovered by ptr
 element:isFocused() -- true/false whether element is focused
 -- Think like, a text input box ready to input text.
 
+element:isActive() -- true if element is active, false otherwise.
+-- (If an element was rendered last frame, it is active, else, inactive)
 
 element:focus() -- focuses an element.
 -- Only one element can be focused per heirarchy.
@@ -86,12 +88,18 @@ element:unfocus() -- unfocuses element
 
 ```lua
 local element = Elem(false) -- Creates a root element.
+-- root elements can be added to Scenes.
+
+local child = OtherElem(element)
+-- creates an element that is a child of `element`.
+-- (99% of the time, this will be done inside of the `Elem` constructor)
+
 ```
 
 
 
 
-# Scene objects:
+# Scene objects / putting it all together:
 
 --------------
 
@@ -143,19 +151,12 @@ end
 
 ```
 
-Important ideas:
+## Gotchas:
 - We can only add an element to a scene if its a Root element!
-
-- Only poll keyboard/textinput to the "top" element in the scene stack.
-    - DONE
-
-- Elements auto-deactivated if they weren't rendered the prev frame.
-    Deactivated = unable to receive events or anything.
+    - ie. if its `parent == false`
 
 
---------
-
-Things to think about:
+## Things to think about:
 - How do we know when to "consume" keyboard input?
     - SOLN: Return `true` from :keypressed to consume.
 
