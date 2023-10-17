@@ -11,10 +11,12 @@ local function clamp(x, min, max)
 end
 
 
-function ScrollThumb:init(sensitivity)
+function ScrollThumb:init(args)
     self.position = 0
-    self.sensitivity = sensitivity -- mouse wheel sensitivity
     self.totalSize = 0
+    for k,v in pairs(args) do
+        self[k] = v
+    end
 end
 
 local SCROLL_BUTTON = 1
@@ -24,7 +26,11 @@ function ScrollThumb:onMouseMoved(x, y, dx, dy, istouch)
     end
 end
 
-function ScrollThumb:render(x,y,w,h)
+function ScrollThumb:onMousePress(x,y)
+    print("button!")
+end
+
+function ScrollThumb:onRender(x,y,w,h)
     love.graphics.setColor(self.color)
     love.graphics.rectangle("fill", x,y,w,h)
     love.graphics.setColor(self.outlineColor)
@@ -32,8 +38,15 @@ function ScrollThumb:render(x,y,w,h)
 end
 
 
-function ScrollBar:init()
-    self.thumb = ScrollThumb(self)
+
+local COL = {0.8,0.8,0.8}
+local OUTLINE = {0.3,0.3,0.3}
+
+function ScrollBar:init(args)
+    self.thumb = ScrollThumb(self, {
+        color = COL,
+        outlineColor = OUTLINE
+    })
 end
 
 
@@ -48,6 +61,7 @@ function ScrollBar:onRender(x,y,w,h)
     local thumbRegion = region
         :set(nil,nil,nil,h/THUMB_RATIO)
         :offset(0, self.thumb.position)
+        :clampInside(region)
     self.thumb:render(thumbRegion:get())
 end
 

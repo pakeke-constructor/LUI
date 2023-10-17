@@ -37,12 +37,12 @@ function Elem:onEndHover(mx, my)
     print("element stopped being hovered")
 end
 
-function Elem:onClick(mx, my, button)
+function Elem:onMousePress(mx, my, button)
     self:focus()
     print("element clicked")
 end
 
-function Elem:onClickRelease(mx, my, button)
+function Elem:onMouseRelease(mx, my, button)
     print("element released!")
 end
 

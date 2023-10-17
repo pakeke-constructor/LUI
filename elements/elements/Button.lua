@@ -15,7 +15,7 @@ function Button:onRender(x,y,w,h)
 end
 
 
-function Button:onClick(x,y)
+function Button:onMousePress(x,y)
     self.count = self.count + 1
 end
 

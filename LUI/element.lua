@@ -108,7 +108,7 @@ function Element:mousepressed(mx, my, button, istouch, presses)
     if not self:contains(mx,my) then
         return false
     end
-    util.tryCall(self.onClick, self, mx, my, button, istouch, presses)
+    util.tryCall(self.onMousePress, self, mx, my, button, istouch, presses)
     self._clickedOnBy[button] = true
 
     for _, child in ipairs(self._children) do
@@ -126,8 +126,8 @@ function Element:mousereleased(mx, my, button, istouch, presses)
         return -- This event doesn't concern this element
     end
     
-    util.tryCall(self.onClickRelease, self, mx, my, button, istouch, presses)
-    self._clickedOnBy[button] = true
+    util.tryCall(self.onMouseRelease, self, mx, my, button, istouch, presses)
+    self._clickedOnBy[button] = false
 
     dispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
 end

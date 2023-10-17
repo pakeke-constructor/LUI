@@ -23,3 +23,11 @@ function love.mousepressed(x,y,button,istouch)
     m:mousepressed(x,y,button,istouch)
 end
 
+function love.mousemoved(x,y,dx,dy,istch)
+    m:mousemoved(x,y,dx,dy,istch)
+end
+
+function love.mousereleased(mx, my, button, istouch, presses)
+    m:mousereleased(mx, my, button, istouch, presses)
+end
+
