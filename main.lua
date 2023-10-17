@@ -10,6 +10,7 @@ _G.elements = elements
 
 _G.mainStyle = LUI.Style()
 mainStyle.LINE_WIDTH = 4
+mainStyle.CORNER_RADIUS = 10
 
 
 local function getScreenView()
