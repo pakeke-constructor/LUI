@@ -19,7 +19,9 @@ end
 
 function Element:setup(parent)
     -- called on initialization
-    if not parent then
+    if parent then
+        self:setParent(parent)
+    else
         self._isRoot = true
     end
     self._children = {}
@@ -42,8 +44,11 @@ function Element:isRoot()
 end
 
 
-function Element:shouldUseStencil()
+function shouldUseStencil(self)
     -- to be overridden
+    if self.shouldUseStencil then
+        return self:shouldUseStencil()
+    end
     return true
 end
 
@@ -90,7 +95,7 @@ end
 function Element:render(x,y,w,h)
     deactivateheirarchy(self)
     activate(self)
-    local useStencil = self:shouldUseStencil()
+    local useStencil = shouldUseStencil(self)
     if useStencil then
         local function stencil()
             love.graphics.rectangle("fill",x,y,w,h)
@@ -193,7 +198,7 @@ end
 
 
 
-function Element:delete()
+function Element:detach()
     local parent = self._parent
     if parent then
         util.listDelete(parent._children, self)
@@ -202,6 +207,12 @@ end
 
 
 
+function Element:setParent(parent)
+    self:detach()
+    self._isRoot = false -- no longer root!
+    self._parent = parent
+    table.insert(parent._children, self)
+end
 
 
 function Element:getParent()

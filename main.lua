@@ -6,7 +6,6 @@ local elements = require("elements")
 _G.elements = elements
 
 
-local m = elements.Menu(false, "hi", {}, 69)
 
 
 _G.mainStyle = LUI.Style()
@@ -20,8 +19,11 @@ end
 
 local scene = LUI.Scene()
 
-m:setView(getScreenView())
-scene:addElement(m)
+local e = elements.ScrollBox(false, {
+    content = elements.TestBox(false)
+})
+e:setView(getScreenView())
+scene:addElement(e)
 
 
 function love.draw()

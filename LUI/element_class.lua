@@ -26,9 +26,6 @@ local function initElement(elementClass, parent, ...)
     ]]
     assertParentValid(parent)
     local element = setmetatable({}, elementClass)
-    if parent then
-        table.insert(parent._children, element)
-    end
     element:setup(parent)
     if element.init then
         element:init(...)

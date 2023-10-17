@@ -65,6 +65,7 @@ local THUMB_RATIO = 5 -- thumb is 5 times smaller than scrollbar
 
 function ScrollBar:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
+    love.graphics.setColor(0.5,0.5,0.5)
     love.graphics.rectangle("line",region:get())
     
     self.totalSize = h
