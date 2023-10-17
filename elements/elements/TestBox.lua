@@ -16,6 +16,7 @@ end
 
 function BigBox:onRender(x,y,w,h)
     local r = Region(x,y,w,h):pad(20)
+    self.height = 700 + 400 * math.sin(love.timer.getTime())
     love.graphics.setColor(1,0,0)
     love.graphics.setLineWidth(10)
     love.graphics.rectangle("line",r:get())

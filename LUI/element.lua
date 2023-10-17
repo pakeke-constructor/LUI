@@ -15,6 +15,11 @@ local function dispatchToChildren(self, funcName, ...)
     end
 end
 
+local function forceDispatchToChildren(self, funcName, ...)
+    for _, child in ipairs(self._children) do
+        child[funcName](child, ...)
+    end
+end
 
 
 function Element:setup(parent)
@@ -141,7 +146,7 @@ function Element:mousereleased(mx, my, button, istouch, presses)
     util.tryCall(self.onMouseRelease, self, mx, my, button, istouch, presses)
     self._clickedOnBy[button] = false
 
-    dispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
+    forceDispatchToChildren(self, "mousereleased", mx, my, button, istouch, presses)
 end
 
 
