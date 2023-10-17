@@ -43,7 +43,7 @@ end
 
 
 function ScrollBar:scroll(dy)
-    local delta = dy * self.sensitivity
+    local delta = -dy * self.sensitivity
     self.position = clamp(self.position + delta, 0, self.totalSize)
 end
 
