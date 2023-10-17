@@ -9,7 +9,7 @@ function Menu:init(a,b,c,d)
 end
 
 
-local SCROLL_WIDTH = 40
+local SCROLL_WIDTH = 20
 
 function Menu:onRender(x,y,w,h)
     love.graphics.rectangle("line",x,y,w,h)

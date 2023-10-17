@@ -112,9 +112,32 @@ function love.draw()
     scene:render()
 end
 
+function love.mousepressed(mx, my, button, istouch, presses)
+    scene:mousepressed(mx, my, button, istouch, presses)
+end
+
+function love.mousereleased(mx, my, button, istouch)
+    scene:mousereleased(mx, my, button, istouch)
+end
+
+function Scene:mousemoved(mx, my, dx, dy, istouch)
+    callForAll(self, "mousemoved", mx, my, dx, dy, istouch)
+    scene:mousereleased(mx, my, button, istouch, presses)
+end
+
 function love.keypressed(key, sc, isrep)
     local consumed = scene:keypressed(key, sc, isrep)
 end
+
+function love.keyreleased(key, scancode)
+    scene:keyreleased(key, scancode)
+end
+
+function love.textinput(text)
+    scene:textinput(text)
+end
+
+
 ```
 
 Important ideas:

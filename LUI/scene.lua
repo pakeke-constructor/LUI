@@ -86,8 +86,8 @@ end
 
 
 
-function Scene:mousereleased(mx, my, button, istouch, presses)
-    callForAll(self, "mousereleased", mx, my, button, istouch, presses)
+function Scene:mousereleased(mx, my, button, istouch)
+    callForAll(self, "mousereleased", mx, my, button, istouch)
 end
 
 function Scene:mousemoved(mx, my, dx, dy, istouch)

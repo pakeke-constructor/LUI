@@ -158,6 +158,14 @@ function Element:mousemoved(mx, my, dx, dy, istouch)
 end
 
 
+function Element:wheelmoved(dx,dy)
+    if self:isHovered() then
+        util.tryCall(self.onWheelMoved, self, dx, dy)
+        dispatchToChildren(self, "wheelmoved", dx, dy)
+    end
+end
+
+
 
 function Element:keypressed(key, scancode, isrepeat)
     util.tryCall(self.onKeyPress, self, key, scancode, isrepeat)

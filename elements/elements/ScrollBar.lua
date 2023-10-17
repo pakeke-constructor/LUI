@@ -14,9 +14,6 @@ end
 function ScrollThumb:init(args)
     self.position = 0
     self.totalSize = 0
-    for k,v in pairs(args) do
-        self[k] = v
-    end
 end
 
 local SCROLL_BUTTON = 1
@@ -26,27 +23,22 @@ function ScrollThumb:onMouseMoved(x, y, dx, dy, istouch)
     end
 end
 
-function ScrollThumb:onMousePress(x,y)
-    print("button!")
-end
-
 function ScrollThumb:onRender(x,y,w,h)
-    love.graphics.setColor(self.color)
-    love.graphics.rectangle("fill", x,y,w,h)
-    love.graphics.setColor(self.outlineColor)
-    love.graphics.rectangle("line", x,y,w,h)
+    mainStyle:rectangle(x,y,w,h)
 end
 
 
-
-local COL = {0.8,0.8,0.8}
-local OUTLINE = {0.3,0.3,0.3}
 
 function ScrollBar:init(args)
-    self.thumb = ScrollThumb(self, {
-        color = COL,
-        outlineColor = OUTLINE
-    })
+    self.thumb = ScrollThumb(self)
+end
+
+
+local SENSITIVITY = 0.4
+
+function ScrollBar:onWheelMoved(_, dy)
+    local t = self.thumb
+    t.position = t.position + dy * SENSITIVITY
 end
 
 
