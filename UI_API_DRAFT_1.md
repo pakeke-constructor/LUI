@@ -52,7 +52,7 @@ function Elem:onKeyRelease(key,scancode) end
 
 
 function Elem:onMouseMoved(x, y, dx, dy, istouch)
-    if self:isFocused() and love.mouse.isDown(1) then
+    if self:isClickedOnBy(1) then
         -- We could use this for a scroll-bar!
     end
 end
