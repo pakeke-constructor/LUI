@@ -35,6 +35,11 @@ function Element:setup(isRoot)
 end
 
 
+function Element:isRoot()
+    return self._isRoot
+end
+
+
 function Element:shouldUseStencil()
     -- to be overridden
     return true
@@ -57,7 +62,7 @@ function Element:setView(x,y,w,h)
     --[[
         the view can only be set explicitly by root elements
     ]]
-    assert(self._isRoot, "Views can only be set explicitly by root elements")
+    assert(self:isRoot(), "Views can only be set explicitly by root elements")
     setView(self, x,y,w,h)
 end
 

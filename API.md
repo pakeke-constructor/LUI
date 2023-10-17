@@ -113,7 +113,7 @@ function love.draw()
 end
 
 function love.mousepressed(mx, my, button, istouch, presses)
-    scene:mousepressed(mx, my, button, istouch, presses)
+    local consumed = scene:mousepressed(mx, my, button, istouch, presses)
 end
 
 function love.mousereleased(mx, my, button, istouch)
@@ -134,7 +134,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
-    scene:textinput(text)
+    local consumed = scene:textinput(text)
 end
 
 

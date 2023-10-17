@@ -23,6 +23,7 @@ end
 
 
 function Scene:addElement(element)
+    assert(element:isRoot(), "Only root elements can be added to scenes")
     table.insert(self.elements, element)
 end
 
@@ -106,6 +107,9 @@ function Scene:textinput(text)
     tryCallFocused(self, "textinput", text)
 end
 
+function Scene:wheelmoved(dx,dy)
+    callForAll(self, "wheelmoved", dx, dy)
+end
 
 
 
