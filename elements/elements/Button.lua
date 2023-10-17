@@ -10,8 +10,10 @@ end
 
 
 function Button:onRender(x,y,w,h)
-    love.graphics.rectangle("line",x,y,w,h)
-    love.graphics.print(tostring(self.count), x + 10, y + 10)
+    -- love.graphics.rectangle("line",x,y,w,h)
+    -- love.graphics.print(tostring(self.count), x + 10, y + 10)
+    mainStyle:rectangle(x, y, w, h)
+    mainStyle:printf(tostring(self.count), x, y, w, "center")
 end
 
 
