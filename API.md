@@ -120,9 +120,8 @@ function love.mousereleased(mx, my, button, istouch)
     scene:mousereleased(mx, my, button, istouch)
 end
 
-function Scene:mousemoved(mx, my, dx, dy, istouch)
-    callForAll(self, "mousemoved", mx, my, dx, dy, istouch)
-    scene:mousereleased(mx, my, button, istouch, presses)
+function love.mousemoved(mx, my, dx, dy, istouch)
+    scene:mousemoved(mx, my, button, istouch, presses)
 end
 
 function love.keypressed(key, sc, isrep)
@@ -135,6 +134,10 @@ end
 
 function love.textinput(text)
     local consumed = scene:textinput(text)
+end
+
+function love.wheelmoved(dx,dy)
+    scene:wheelmoved(dx,dy)
 end
 
 

@@ -200,6 +200,13 @@ end
 
 
 
+
+
+function Element:getParent()
+    return self._parent
+end
+
+
 local MAX_DEPTH = 10000
 
 function Element:getRoot()
@@ -252,6 +259,11 @@ end
 
 function Element:isFocused()
     return self._focused
+end
+
+
+function Element:isHovered()
+    return self._hovered
 end
 
 
