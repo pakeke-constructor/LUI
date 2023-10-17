@@ -5,12 +5,6 @@ local Element = require(path .. ".element")
 
 
 
-local function setParent(childElem, parentElem)
-    table.insert(parentElem._children, childElem)
-    childElem._parent = parentElem
-end
-
-
 local function assertParentValid(parent)
     if not parent then
         if parent ~= false then
@@ -33,9 +27,9 @@ local function initElement(elementClass, parent, ...)
     assertParentValid(parent)
     local element = setmetatable({}, elementClass)
     if parent then
-        setParent(element, parent)
+        table.insert(parent._children, element)
     end
-    element:setup(not parent)
+    element:setup(parent)
     if element.init then
         element:init(...)
     end

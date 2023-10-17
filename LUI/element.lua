@@ -17,11 +17,13 @@ end
 
 
 
-function Element:setup(isRoot)
+function Element:setup(parent)
     -- called on initialization
-    self._isRoot = isRoot
+    if not parent then
+        self._isRoot = true
+    end
     self._children = {}
-    self._parent = nil
+    self._parent = parent
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
     self._active = false

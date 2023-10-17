@@ -11,16 +11,13 @@ local function clamp(x, min, max)
 end
 
 
-local EMPTY = {}
+
 
 local DEFAULT_SENSITIVITY = 5
 
 
-function ScrollThumb:init(args)
-    args = args or EMPTY
-end
-
 local SCROLL_BUTTON = 1
+
 function ScrollThumb:onMouseMoved(x, y, dx, dy, istouch)
     if self:isClickedOnBy(SCROLL_BUTTON) then
         local parent = self:getParent()
@@ -34,7 +31,10 @@ end
 
 
 
+local EMPTY = {}
+
 function ScrollBar:init(args)
+    args = args or EMPTY
     self.position = 0
     self.totalSize = 0
     self.sensitivity = args.sensitivity or DEFAULT_SENSITIVITY
@@ -43,13 +43,12 @@ end
 
 
 function ScrollBar:scroll(dy)
-    local t = self.thumb
-    local delta = dy * t.sensitivity
-    clamp(t.position + delta, 0, self.totalSize)
+    local delta = dy * self.sensitivity
+    self.position = clamp(self.position + delta, 0, self.totalSize)
 end
 
 function ScrollBar:onWheelMoved(_, dy)
-    self:scroll(self,dy)
+    self:scroll(dy)
 end
 
 

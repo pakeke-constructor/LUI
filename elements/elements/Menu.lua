@@ -7,7 +7,7 @@ function Menu:init()
     self.button = elements.Button(self)
 
     self.scroll = elements.ScrollBar(self, {
-        sensitivity = 5
+        sensitivity = 10
     })
 end
 
