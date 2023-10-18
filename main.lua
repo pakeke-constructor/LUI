@@ -1,6 +1,11 @@
 
 love.graphics.setDefaultFilter("nearest", "nearest")
 
+local font = love.graphics.newImageFont("examples/font.png",
+' ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789><:$,.!@()|_?#;/\\[]       ')
+love.graphics.setFont(font)
+
+
 _G.Region = require("examples.lib.region")
 _G.LUI = require("LUI")
 
@@ -59,5 +64,8 @@ function love.wheelmoved(dx,dy)
     scene:wheelmoved(dx,dy)
 end
 
+function love.resize(x,y)
+    scene:resize(x,y)
+end
 
 

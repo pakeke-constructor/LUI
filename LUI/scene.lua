@@ -111,6 +111,9 @@ function Scene:wheelmoved(dx,dy)
     callForAll(self, "wheelmoved", dx, dy)
 end
 
+function Scene:resize(x,y)
+    callForAll(self, "resize", x,y)
+end
 
 
 return Scene

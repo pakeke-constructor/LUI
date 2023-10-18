@@ -195,6 +195,12 @@ function Element:textinput(text)
 end
 
 
+function Element:resize(x,y)
+    util.tryCall(self.onResize, self, x, y)
+    dispatchToChildren(self, "resize", x, y)
+end
+
+
 
 function Element:detach()
     local parent = self._parent

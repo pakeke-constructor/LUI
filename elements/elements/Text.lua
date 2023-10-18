@@ -45,7 +45,8 @@ function Text:onRender(x,y,w,h)
     -- scale text to fit box
     local limit = self.wrap or tw
     local scale = math.min(w/limit, h/th) * self.scale
-    love.graphics.printf(self.text, x+w/2, y+h/2, limit, self.align, 0, scale, scale, tw/2, th/2)
+    local drawX, drawY = math.floor(x+w/2), math.floor(y+h/2)
+    love.graphics.printf(self.text, drawX, drawY, limit, self.align, 0, scale, scale, tw/2, th/2)
 end
 
 
