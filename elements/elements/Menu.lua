@@ -5,34 +5,22 @@ local Menu = LUI.Element()
 
 function Menu:init()
     self.button = elements.Button(self)
+    
+    -- self.flex = elements.FlexBox({
+    -- })
 
-    self.scroll = elements.ScrollBar(self, {
-        sensitivity = 10
-    })
+    self.text = elements.Text(self)
 end
 
-
-local SCROLL_WIDTH = 28
 
 function Menu:onRender(x,y,w,h)
-    love.graphics.rectangle("line",x,y,w,h)
     local region = Region(x,y,w,h)
+    local header, left, right
 
-    -- common idiom to create fixed-size splits:
-    local main, scroll = region:splitHorizontal(w-SCROLL_WIDTH, SCROLL_WIDTH)
-
-    local r = main:padRatio(0.25)
-
-    local scrollSize = h * 4 -- for future, this should be an actual value
-    local scr = -self.scroll:getScrollRatio() * scrollSize
-    self.button:render(r:offset(0,scr):get())
-
-    self.scroll:render(scroll:get())
-end
-
-
-function Menu:onWheelMoved(_,dy)
-    self.scroll:scroll(dy)
+    header, region = region:splitVertical(0.2, 0.8)
+    left, right = region:pad(16):splitHorizontal(0.5, 0.5)
+    
+    self.text:render(header:get())
 end
 
 

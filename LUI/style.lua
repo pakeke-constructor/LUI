@@ -46,6 +46,12 @@ function Style:rectangle(x,y,w,h)
 end
 
 
+function Style:line(x1,y1, x2,y2)
+    self:setLineWidth()
+    love.graphics.line(x1,y1, x2,y2)
+end
+
+
 function Style:printf(...)
   self:setColor("FOREGROUND_COLOR")
   love.graphics.printf(...)

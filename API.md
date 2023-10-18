@@ -87,7 +87,7 @@ element:unfocus() -- unfocuses element
 ---------------
 
 ```lua
-local element = Elem(false) -- Creates a root element.
+local element = Elem(false) -- Creates a root element. (false=root)
 -- root elements can be added to Scenes.
 
 local child = OtherElem(element)
@@ -108,12 +108,15 @@ local child = OtherElem(element)
 
 local scene = Scene()
 
--- Adding elements:
-scene:addElement(myElement)
-scene:addElement(elem2)
 
--- Removing elements:
-scene:removeElement(elem2)
+function love.load()
+    -- Adding elements:
+    scene:addElement(myElement)
+    scene:addElement(elem2)
+
+    -- Removing elements:
+    scene:removeElement(elem2)
+end
 
 
 function love.draw()
