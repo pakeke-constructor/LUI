@@ -49,15 +49,6 @@ function Element:isRoot()
 end
 
 
-function shouldUseStencil(self)
-    -- to be overridden
-    if self.shouldUseStencil then
-        return self:shouldUseStencil()
-    end
-    return true
-end
-
-
 
 
 local function setView(self, x,y,w,h)
@@ -97,24 +88,26 @@ local function activate(self)
 end
 
 
+function Element:startStencil(x,y,w,h)
+    local function stencil()
+        love.graphics.rectangle("fill",x,y,w,h)
+    end
+    love.graphics.stencil(stencil, "replace", 2)
+    love.graphics.setStencilTest("greater", 1)
+end
+
+
+function Element:endStencil()
+    love.graphics.setStencilTest()
+end
+
+
 function Element:render(x,y,w,h)
     deactivateheirarchy(self)
     activate(self)
-    local useStencil = shouldUseStencil(self)
-    if useStencil then
-        local function stencil()
-            love.graphics.rectangle("fill",x,y,w,h)
-        end
-        love.graphics.stencil(stencil, "replace", 1)
-        love.graphics.setStencilTest("greater", 0)
-    end
 
     util.tryCall(self.onRender, self, x,y,w,h)
 
-    if useStencil then
-        love.graphics.setStencilTest()
-    end
-    
     setView(self, x,y,w,h)
 end
 

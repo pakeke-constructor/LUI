@@ -57,7 +57,9 @@ function ScrollBox:onRender(x,y,w,h)
 
         local dy = -self.scroll:getScrollRatio() * (contentHeight - h)
         local X,Y,W,_ = content:offset(0,dy):get()
+        self:startStencil(region:get())
         self.content:render(X,Y,W,contentHeight)
+        self:endStencil()
     else
         self.content:render(region:get())
     end
