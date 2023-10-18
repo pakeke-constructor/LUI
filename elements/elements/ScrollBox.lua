@@ -40,17 +40,8 @@ function ScrollBox:onRender(x,y,w,h)
     -- common idiom to create fixed-size splits:
     local content, scroll = region:splitHorizontal(w-self.scrollWidth, self.scrollWidth)
 
-    local contentHeight = self.content.height
-    --[[
-        TODO:
-        using `.height` here is something that I am REALLY unhappy with.
-        It just feels hacky.
-        Maybe we need a more standardized protocol for children
-        telling parents what width/height they want?
-        idk! Do some thinking.
-    ]]
-
-    assert(contentHeight, "Content element needs a .height field")
+    local _, contentHeight = self.content:getPreferredSize()
+    assert(contentHeight, "Content element needs a preferred height")
     
     if h < contentHeight then
         self.scroll:render(scroll:get())

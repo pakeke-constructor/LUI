@@ -218,6 +218,11 @@ function Element:getParent()
 end
 
 
+function Element:getChildren()
+    return self._children
+end
+
+
 local MAX_DEPTH = 10000
 
 function Element:getRoot()
@@ -264,6 +269,17 @@ function Element:unfocus()
     setRootFocus(self, nil)
     self._focused = false
     util.tryCall(self.onUnfocus, self)
+end
+
+
+function Element:getPreferredSize()
+    return self._prefWidth, self._prefHeight
+end
+
+
+function Element:setPreferredSize(w,h)
+    self._prefWidth = w
+    self._prefHeight = h
 end
 
 

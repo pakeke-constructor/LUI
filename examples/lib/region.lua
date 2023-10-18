@@ -390,9 +390,8 @@ function Region:clampInside(other)
         inside of `other`.
         Does not change the w,h values.
     ]]
-    local x,y,endX,endY
+    local x,y
     x, y = self.x, self.y
-    endX, endY = getEnd(self)
     local endX2, endY2 = getEnd(other)
     x = math.min(x, endX2 - self.w)
     y = math.min(y, endY2 - self.h)
@@ -400,8 +399,6 @@ function Region:clampInside(other)
     y = math.max(other.y, y)
     return newRegion(x,y,self.w,self.h)
 end
-
-
 
 
 
