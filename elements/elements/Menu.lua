@@ -30,6 +30,8 @@ function Menu:init()
     self.text = elements.Text(self, {
         text = "hi"
     })
+
+    self.input = elements.Input(self)
 end
 
 
@@ -40,12 +42,14 @@ function Menu:onRender(x,y,w,h)
     mainStyle:rectangle(region:get())
 
     header, region = region:pad(10):splitVertical(0.2, 0.8)
-    left, right = region:pad(16):splitHorizontal(0.2, 0.5)
+    left, right = region:pad(16):splitHorizontal(0.3, 0.5)
     
     mainStyle:rectangle(header:get())
     self.text:render(header:get())
 
-    self.image:render(left:padRatio(0.1):get())
+    local topLeft, botLeft = left:splitVertical(0.2, 0.8)
+    self.input:render(topLeft:padRatio(0.1):get())
+    self.image:render(botLeft:padRatio(0.1):get())
 
     do
     local prefW, prefH = self.flex:getPreferredSize()

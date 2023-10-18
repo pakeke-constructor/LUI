@@ -54,6 +54,10 @@ function Text:setText(text)
     self.text = text
 end
 
+function Text:getText()
+    return self.text
+end
+
 
 return Text
 
