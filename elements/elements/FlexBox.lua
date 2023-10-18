@@ -39,12 +39,13 @@ function FlexBox:onRender(x,y,w,h)
 
     for _, elem in ipairs(children) do
         local elemW,elemH = elem:getPreferredSize()
+        local maxWidth = (w - self.padding*2)
         elemH = elemH or defaultHeight
-        elemW = elemW or (w - self.padding*2)
+        elemW = elemW or maxWidth
         prefH = prefH + elemH
         prefW = math.max(prefW, elemW or 0)
         local ex, ey = x + self.padding, currY + self.padding
-        elem:render(ex,ey, elemW,elemH)
+        elem:render(ex,ey, math.min(elemW, maxWidth),elemH)
         currY = currY + elemH
     end
 
