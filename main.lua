@@ -1,4 +1,6 @@
 
+love.graphics.setDefaultFilter("nearest", "nearest")
+
 _G.Region = require("examples.lib.region")
 _G.LUI = require("LUI")
 

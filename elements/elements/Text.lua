@@ -1,20 +1,23 @@
 
 
 local Text = LUI.Element()
+--[[
+
+Text is a text element that will scale itself to
+automatically fit the given box.
 
 
-local function getSize(text)
+]]
+
+
+local function getTextSize(self)
     local font = love.graphics.getFont()
     local width
-    if type(text) == "table" then
-        for i=2, #text, 2 do
-            local txt = text[i]
-            width = width + font:getWidth(txt)
-        end
-    else -- its a string
-        width = font:getWidth(text)
+    if self.wrap then
+        width = font:getWrap(self.text, self.wrap)
+    else
+        width = font:getWidth(self.text)
     end
-
     local height = font:getHeight()
     return width, height
 end
@@ -28,24 +31,21 @@ function Text:init(args)
         self.wrap = args.wrap -- whether we do text wrapping
     end
     
-    self:setPreferredSize(getSize(self.text))
+    self.scale = args.scale or 1
+    self.align = args.align or "left"
+    self:setPreferredSize(getTextSize(self))
 end
 
 
 
 function Text:onRender(x,y,w,h)
-    local width, height
-    if self.wrap then
-        local font = love.graphics.getFont()
-        width = font:getWrap(self.text)
-        height = font:getHeight()
-    else
-        width, height = getSize(self.text)
-    end
-    self:setPreferredSize(width, height)
+    local tw, th = getTextSize(self)
+    self:setPreferredSize(tw, th)
 
-    local limit = self.wrap and width or w
-    love.graphics.printf(self.text, x, y, limit, "center")
+    -- scale text to fit box
+    local limit = self.wrap or tw
+    local scale = math.min(w/limit, h/th) * self.scale
+    love.graphics.printf(self.text, x+w/2, y+h/2, limit, self.align, 0, scale, scale, tw/2, th/2)
 end
 
 
