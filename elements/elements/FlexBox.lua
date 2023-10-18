@@ -50,11 +50,7 @@ function FlexBox:onRender(x,y,w,h)
 
     prefW, prefH = prefW + self.padding*2, prefH + self.padding*2
 
-    if self:isRoot() then
-        self:setView(x,y,prefW, prefH)
-    else
-        self:setPreferredSize(prefW, prefH)
-    end
+    self:setPreferredSize(prefW, prefH)
 end
 
 

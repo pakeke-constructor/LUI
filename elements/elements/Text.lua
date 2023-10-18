@@ -28,7 +28,6 @@ function Text:init(args)
         self.wrap = args.wrap -- whether we do text wrapping
     end
     
-    print("Hello?", self.text)
     self:setPreferredSize(getSize(self.text))
 end
 
@@ -43,6 +42,7 @@ function Text:onRender(x,y,w,h)
     else
         width, height = getSize(self.text)
     end
+    self:setPreferredSize(width, height)
 
     local limit = self.wrap and width or w
     love.graphics.printf(self.text, x, y, limit, "center")

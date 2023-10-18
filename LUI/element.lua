@@ -280,6 +280,11 @@ end
 function Element:setPreferredSize(w,h)
     self._prefWidth = w
     self._prefHeight = h
+    if self:isRoot() then
+        -- Well damn! Why ask the boss, when you are the boss?
+        local x,y = self:getView()
+        self:setView(x,y, w,h)
+    end
 end
 
 
