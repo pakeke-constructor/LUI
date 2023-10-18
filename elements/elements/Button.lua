@@ -4,19 +4,24 @@ local Button = LUI.Element()
 
 
 
-function Button:init()
-    self.count = 0
+function Button:init(args)
+    self.onClick = args.onClick
+    self.text = args.text
 end
 
 
 function Button:onRender(x,y,w,h)
     mainStyle:rectangle(x, y, w, h)
-    mainStyle:printf(tostring(self.count), x, y, w, "center")
+    if self.text then
+        mainStyle:printf(tostring(self.text), x, y, w, "center")
+    end
 end
 
 
 function Button:onMousePress(x,y)
-    self.count = self.count + 1
+    if self.onClick then
+        self:onClick(x,y)
+    end
 end
 
 

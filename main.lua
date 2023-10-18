@@ -20,9 +20,7 @@ end
 
 local scene = LUI.Scene()
 
-local e = elements.ScrollBox(false, {
-    content = elements.TestBox(false)
-})
+local e = elements.Menu(false)
 e:setView(getScreenView())
 scene:addElement(e)
 

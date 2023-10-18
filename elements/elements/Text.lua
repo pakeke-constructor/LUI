@@ -3,16 +3,6 @@
 local Text = LUI.Element()
 
 
-function Text:init(args)
-    if type(args) == "string" then
-        self.text = args
-    else
-        self.text = args.text
-    end
-end
-
-
-
 local function getSize(text)
     local font = love.graphics.getFont()
     local width
@@ -22,7 +12,7 @@ local function getSize(text)
             width = width + font:getWidth(txt)
         end
     else -- its a string
-        return font:getWidth(text)
+        width = font:getWidth(text)
     end
 
     local height = font:getHeight()
@@ -30,9 +20,32 @@ local function getSize(text)
 end
 
 
+function Text:init(args)
+    if type(args) == "string" then
+        self.text = args
+    else
+        self.text = args.text
+        self.wrap = args.wrap -- whether we do text wrapping
+    end
+    
+    print("Hello?", self.text)
+    self:setPreferredSize(getSize(self.text))
+end
+
+
+
 function Text:onRender(x,y,w,h)
-    local width, height = getSize(self.text)
-    love.graphics.printf(self.text, x, y)
+    local width, height
+    if self.wrap then
+        local font = love.graphics.getFont()
+        width = font:getWrap(self.text)
+        height = font:getHeight()
+    else
+        width, height = getSize(self.text)
+    end
+
+    local limit = self.wrap and width or w
+    love.graphics.printf(self.text, x, y, limit, "center")
 end
 
 
@@ -41,6 +54,5 @@ function Text:setText(text)
 end
 
 
-return Menu
-
+return Text
 

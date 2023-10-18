@@ -17,23 +17,14 @@ That is, FlexBoxes will try to be the minimum size possible.
 ]]
 
 
+local DEFAULT_PADDING = 12
 
 function FlexBox:init(args)
-    assert(type(args) == "table", "bad args")
-    assert(args.maxWidth and args.maxHeight, "?")
-
     for _, elem in ipairs(args) do
-        local _,h = elem:getPreferredSize()
-        if not h then
-            error("element needs a preferred height!")
-        end
         elem:setParent(self)
     end
 
-    self.maxWidth = args.maxWidth
-    self.maxHeight = args.maxHeight
-    self.minWidth = args.minWidth or 0
-    self.minHeight = args.minHeight or 0
+    self.padding = args.padding or DEFAULT_PADDING
 end
 
 
@@ -49,12 +40,15 @@ function FlexBox:onRender(x,y,w,h)
     for _, elem in ipairs(children) do
         local elemW,elemH = elem:getPreferredSize()
         elemH = elemH or defaultHeight
-        elemW = elemW or w
+        elemW = elemW or (w - self.padding*2)
         prefH = prefH + elemH
         prefW = math.max(prefW, elemW or 0)
-        elem:render(currY,x, elemW,elemH)
-        currY = currY + elemW
+        local ex, ey = x + self.padding, currY + self.padding
+        elem:render(ex,ey, elemW,elemH)
+        currY = currY + elemH
     end
+
+    prefW, prefH = prefW + self.padding*2, prefH + self.padding*2
 
     if self:isRoot() then
         self:setView(x,y,prefW, prefH)
