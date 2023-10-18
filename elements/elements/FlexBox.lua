@@ -45,7 +45,7 @@ function FlexBox:onRender(x,y,w,h)
         prefH = prefH + elemH
         prefW = math.max(prefW, elemW or 0)
         local ex, ey = x + self.padding, currY + self.padding
-        elem:render(ex,ey, math.min(elemW, maxWidth),elemH)
+        elem:render(ex,ey, math.min(elemW,maxWidth),elemH)
         currY = currY + elemH
     end
 
