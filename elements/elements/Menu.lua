@@ -8,21 +8,6 @@ function Menu:init()
         text = "Button!"
     })
     
-    self.flex = elements.FlexBox(self, {
-        elements.Text(false, "Hello!"),
-        elements.Text(false, "This element is a FlexBox"),
-        elements.Text(false, "It will expand to automatically fit the content.", {wrap=50}),
-        elements.Text(false, "(It will also shrink to fit too)"),
-        elements.Text(false, "We can put anything we want in here."),
-        elements.Button(false, {
-            text = "Like a button. Clicks: 0",
-            onClick = function(butto)
-                butto.count = (butto.count or 0) + 1
-                butto.text = "Like a button! Clicks: " .. butto.count
-            end
-        })
-    })
-
     self.image = elements.Image(self, {
         image = love.graphics.newImage("examples/cat.jpg")
     })

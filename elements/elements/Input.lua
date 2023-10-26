@@ -31,7 +31,6 @@ end
 
 
 function Input:onMousePress()
-    print("hi?")
     self:focus()
 end
 
