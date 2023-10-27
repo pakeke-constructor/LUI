@@ -18,6 +18,10 @@ local DEFAULT_SENSITIVITY = 5
 
 local SCROLL_BUTTON = 1
 
+function ScrollThumb:onMousePressed(button)
+    return button == SCROLL_BUTTON
+end
+
 function ScrollThumb:onMouseMoved(x, y, dx, dy, istouch)
     if self:isClickedOnBy(SCROLL_BUTTON) then
         local parent = self:getParent()
@@ -49,6 +53,7 @@ end
 
 function ScrollBar:onWheelMoved(_, dy)
     self:scroll(dy)
+    return true
 end
 
 
