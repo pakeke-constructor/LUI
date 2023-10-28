@@ -34,11 +34,28 @@ local function getLimitedDelta(elem, mouseX, dx)
     return dx
 end
 
+
+
+local function computeValue(elem, position)
+    -- computes value from position
+    local mag = elem.max - elem.min
+    return elem.min + ((position/elem.totalSize) * mag)
+end
+
+
+local function computePosition(elem, value)
+    -- computes position from value
+    local mag = elem.max - elem.min
+    return ((value - elem.min) / mag) * elem.totalSize
+end
+
+
 function Thumb:onMouseMoved(x, y, dx, dy, istouch)
     if self:isClickedOnBy(SCROLL_BUTTON) then
         local parent = self:getParent()
         dx = getLimitedDelta(self, x, dx)
-        parent.value = clamp(parent.value + dx, 0, parent.totalSize)
+        parent.position = clamp(parent.position + dx, 0, parent.totalSize)
+        parent.value = computeValue(parent, parent.position)
         if parent.onValueChanged then
             parent:onValueChanged(parent.value)
         end
@@ -60,7 +77,8 @@ function Slider:init(args)
     self.min = args.min
     self.max = args.max
     assert(self.min<=self.max,"wot wot")
-    self.value = clamp(self.startValue or 0, self.min, self.max)
+    self.value = clamp(0, self.min, self.max)
+    self.position = 0
 
     self.thumb = Thumb(self)
 end
@@ -77,9 +95,10 @@ function Slider:onRender(x,y,w,h)
     
     local thumbWidth = w/THUMB_RATIO
     self.totalSize = w - thumbWidth
+    self.position = computePosition(self, self.value)
     local thumbRegion = region
         :set(nil,nil,w/THUMB_RATIO,nil)
-        :offset(self.value, 0)
+        :offset(self.position, 0)
         :clampInside(region)
     self.thumb:render(thumbRegion:get())
 end

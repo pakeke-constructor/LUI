@@ -23,8 +23,12 @@ function Menu:init()
         max = 30,
         startValue = 10,
         onValueChanged = function(slf, value)
-            print(value)
+            local par = slf:getParent()
+            par.sliderText:setText(string.format("Slider: %.2f", value))
         end
+    })
+    self.sliderText = elements.Text(self, {
+        text = "no value"
     })
 end
 
@@ -47,6 +51,7 @@ function Menu:onRender(x,y,w,h)
 
     local top, bot = right:padRatio(0.1):splitVertical(0.2,0.8)
     self.slider:render(top:get())
+    self.sliderText:render(bot:padRatio(0.15):get())
     --[[
     do
     local prefW, prefH = self.flex:getPreferredSize()
