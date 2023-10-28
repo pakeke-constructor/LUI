@@ -91,7 +91,7 @@ function Slider:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
     love.graphics.setColor(0.5,0.5,0.5)
     local lineRegion = region:padRatio(0,0.4,0,0.4)
-    love.graphics.rectangle("line",lineRegion:get())
+    mainStyle:darkRectangle(lineRegion:get())
     
     local thumbWidth = w/THUMB_RATIO
     self.totalSize = w - thumbWidth

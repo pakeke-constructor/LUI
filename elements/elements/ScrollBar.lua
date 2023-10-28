@@ -12,6 +12,29 @@ end
 
 
 
+local function getLimitedDelta(elem, mouseY, dy)
+    --[[
+        This is to ensure that the thumb is moved in-tune with
+        the mouse.
+    ]]
+    local _x,y,_w,h = elem:getView()
+    if dy > 0 then
+        -- If mouse is behind elem, and we are dragging forward:
+        if mouseY < y then
+            return 0 -- set delta to 0
+        end
+    else
+        -- If mouse is ahead of elem, and we are dragging back:
+        if mouseY > y+h then
+            return 0 -- set delta to 0
+        end
+    end
+    return dy
+end
+
+
+
+
 
 local DEFAULT_SENSITIVITY = 5
 
@@ -25,6 +48,7 @@ end
 function ScrollThumb:onMouseMoved(x, y, dx, dy, istouch)
     if self:isClickedOnBy(SCROLL_BUTTON) then
         local parent = self:getParent()
+        dy = getLimitedDelta(self, y, dy)
         parent.position = clamp(parent.position + dy, 0, parent.totalSize)
     end
 end
@@ -73,9 +97,10 @@ function ScrollBar:onRender(x,y,w,h)
     love.graphics.setColor(0.5,0.5,0.5)
     love.graphics.rectangle("line",region:get())
     
-    self.totalSize = h
+    local thumbSize = h/THUMB_RATIO
+    self.totalSize = h - thumbSize
     local thumbRegion = region
-        :set(nil,nil,nil,h/THUMB_RATIO)
+        :set(nil,nil,nil,thumbSize)
         :offset(0, self.position)
         :clampInside(region)
     self.thumb:render(thumbRegion:get())
