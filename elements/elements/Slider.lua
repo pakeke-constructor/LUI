@@ -11,15 +11,37 @@ local function clamp(x, min, max)
 end
 
 
-local DEFAULT_SENSITIVITY = 5
-
 
 local SCROLL_BUTTON = 1
+
+local function getLimitedDelta(elem, mouseX, dx)
+    --[[
+        This is to ensure that the thumb is moved in-tune with
+        the mouse.
+    ]]
+    local x,_y,w,_h = elem:getView()
+    if dx > 0 then
+        -- If mouse is behind elem, and we are dragging forward:
+        if mouseX < x then
+            return 0 -- set delta to 0
+        end
+    else
+        -- If mouse is ahead of elem, and we are dragging back:
+        if mouseX > x+w then
+            return 0 -- set delta to 0
+        end
+    end
+    return dx
+end
 
 function Thumb:onMouseMoved(x, y, dx, dy, istouch)
     if self:isClickedOnBy(SCROLL_BUTTON) then
         local parent = self:getParent()
-        parent.position = clamp(parent.position + dy, 0, parent.totalSize)
+        dx = getLimitedDelta(self, x, dx)
+        parent.value = clamp(parent.value + dx, 0, parent.totalSize)
+        if parent.onValueChanged then
+            parent:onValueChanged(parent.value)
+        end
     end
 end
 
@@ -34,7 +56,7 @@ end
 
 
 function Slider:init(args)
-    self.onChangeValue = args.onChangeValue
+    self.onValueChanged = args.onValueChanged
     self.min = args.min
     self.max = args.max
     assert(self.min<=self.max,"wot wot")
@@ -44,13 +66,17 @@ function Slider:init(args)
 end
 
 
+local THUMB_RATIO = 4
+
 
 function Slider:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
     love.graphics.setColor(0.5,0.5,0.5)
-    love.graphics.rectangle("line",region:get())
+    local lineRegion = region:padRatio(0,0.4,0,0.4)
+    love.graphics.rectangle("line",lineRegion:get())
     
-    self.totalSize = w
+    local thumbWidth = w/THUMB_RATIO
+    self.totalSize = w - thumbWidth
     local thumbRegion = region
         :set(nil,nil,w/THUMB_RATIO,nil)
         :offset(self.value, 0)

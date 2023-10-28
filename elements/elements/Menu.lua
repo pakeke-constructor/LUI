@@ -17,6 +17,15 @@ function Menu:init()
     })
 
     self.input = elements.Input(self)
+
+    self.slider = elements.Slider(self, {
+        min = 5,
+        max = 30,
+        startValue = 10,
+        onValueChanged = function(slf, value)
+            print(value)
+        end
+    })
 end
 
 
@@ -36,6 +45,9 @@ function Menu:onRender(x,y,w,h)
     self.input:render(topLeft:padRatio(0.1):get())
     self.image:render(botLeft:padRatio(0.1):get())
 
+    local top, bot = right:padRatio(0.1):splitVertical(0.2,0.8)
+    self.slider:render(top:get())
+    --[[
     do
     local prefW, prefH = self.flex:getPreferredSize()
     local r = right
@@ -43,6 +55,7 @@ function Menu:onRender(x,y,w,h)
     mainStyle:rectangle(flexR:get())
     self.flex:render(flexR:get())
     end
+    ]]
 end
 
 
