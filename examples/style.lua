@@ -1,10 +1,6 @@
 
-local path = (...):gsub('%.[^%.]+$', '')
-local util = require(path .. ".util")
 
-
-local Style = util.Class()
-
+local Style = {}
 
 local DEFAULTS = {
     LINE_WIDTH = 2,
