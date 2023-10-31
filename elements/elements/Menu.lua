@@ -30,6 +30,10 @@ function Menu:init()
     self.sliderText = elements.Text(self, {
         text = "no value"
     })
+
+    self.scrollBox = elements.ScrollBox(self, {
+        content = elements.TestBox(self)
+    })
 end
 
 
@@ -49,18 +53,12 @@ function Menu:onRender(x,y,w,h)
     self.input:render(topLeft:padRatio(0.1):get())
     self.image:render(botLeft:padRatio(0.1):get())
 
-    local top, bot = right:padRatio(0.1):splitVertical(0.2,0.8)
-    self.slider:render(top:get())
-    self.sliderText:render(bot:padRatio(0.15):get())
-    --[[
-    do
-    local prefW, prefH = self.flex:getPreferredSize()
-    local r = right
-    local flexR = right:shrinkTo((prefW or r.w), (prefH or r.h))
-    mainStyle:rectangle(flexR:get())
-    self.flex:render(flexR:get())
-    end
-    ]]
+    local top, bot = right:padRatio(0.03):splitVertical(0.3,0.8)
+    local sliderText, slider = top:splitVertical(0.5,0.5)
+    self.slider:render(slider:get())
+    self.sliderText:render(sliderText:padRatio(0.1):get())
+
+    self.scrollBox:render(bot:padRatio(0.08):get())
 end
 
 
