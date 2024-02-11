@@ -35,6 +35,18 @@ function Scene:removeElement(element)
 end
 
 
+function Scene:toggleElement(element)
+  local i = util.find(self.elements, element)
+  if i then
+    -- I saw a big warning up above about an O(n^2),
+    -- so I decided to not exacerbate that
+    table.remove(self.elements, i)
+  else
+    self:addElement(element)
+  end
+end
+
+
 function Scene:focus(element)
     -- WARNING: This is O(n^2)
     util.listDelete(self.elements, element)
