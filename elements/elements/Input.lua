@@ -18,7 +18,7 @@ function Input:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
     mainStyle:rectangle(x,y,w,h)
 
-    local textRegion = region:pad(10)
+    local textRegion = region:padPixels(10)
     if self:isFocused() then
         local _, cursorRegion = textRegion:splitHorizontal(0.9, 0.1)
         if math.floor(love.timer.getTime() * 2) % 2 == 0 then

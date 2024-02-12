@@ -13,7 +13,7 @@ function ImageButton:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
     local imgRegion = Region(0,0,iw,ih)
 
-    local padded = region:padRatio(0.05)
+    local padded = region:pad(0.05)
     local scale = imgRegion:getScaleToFit(padded)
     -- useful idiom when we want to scale image/text ^^^^
 

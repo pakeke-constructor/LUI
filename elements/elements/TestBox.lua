@@ -15,7 +15,7 @@ end
 
 
 function TestBox:onRender(x,y,w,h)
-    local r = Region(x,y,w,h):pad(20)
+    local r = Region(x,y,w,h):padPixels(20)
     local height = 300 + 200 * math.sin(love.timer.getTime()/4)
     self:setPreferredSize(nil, height)
     love.graphics.setColor(1,0,0)
@@ -26,7 +26,7 @@ function TestBox:onRender(x,y,w,h)
     local ROWS = 2
     local buttonRegions = r:grid(ROWS,NUM_BUTTO/ROWS)
     for i, region in ipairs(buttonRegions) do
-        self.buttons[i]:render(region:pad(10):get())
+        self.buttons[i]:render(region:padPixels(10):get())
     end
     end
 end

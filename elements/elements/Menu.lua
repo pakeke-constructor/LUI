@@ -43,22 +43,22 @@ function Menu:onRender(x,y,w,h)
 
     mainStyle:rectangle(region:get())
 
-    header, region = region:pad(10):splitVertical(0.2, 0.8)
-    left, right = region:pad(16):splitHorizontal(0.3, 0.5)
+    header, region = region:padPixels(10):splitVertical(0.2, 0.8)
+    left, right = region:padPixels(16):splitHorizontal(0.3, 0.5)
     
     mainStyle:rectangle(header:get())
     self.text:render(header:get())
 
     local topLeft, botLeft = left:splitVertical(0.2, 0.8)
-    self.input:render(topLeft:padRatio(0.1):get())
-    self.image:render(botLeft:padRatio(0.1):get())
+    self.input:render(topLeft:pad(0.1):get())
+    self.image:render(botLeft:pad(0.1):get())
 
-    local top, bot = right:padRatio(0.03):splitVertical(0.3,0.8)
+    local top, bot = right:pad(0.03):splitVertical(0.3,0.8)
     local sliderText, slider = top:splitVertical(0.5,0.5)
     self.slider:render(slider:get())
-    self.sliderText:render(sliderText:padRatio(0.1):get())
+    self.sliderText:render(sliderText:pad(0.1):get())
 
-    self.scrollBox:render(bot:padRatio(0.08):get())
+    self.scrollBox:render(bot:pad(0.08):get())
 end
 
 

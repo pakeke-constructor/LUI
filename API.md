@@ -10,7 +10,7 @@
 
 Functions we can override:
 ```lua
-local Elem = LUI.ElementClass()
+local Elem = LUI.Element()
 
 function Elem:init(args)
     self.button = Button(self, {})
@@ -24,8 +24,8 @@ function Elem:onRender(region)
 
     local left, right = region:splitHorizontal(0.4, 0.6)
     
-    self.button:render(left:pad(20))
-    self.input:render(right:pad(20))
+    self.button:render(left:padPixels(20))
+    self.input:render(right:padPixels(20))
 end
 
 
