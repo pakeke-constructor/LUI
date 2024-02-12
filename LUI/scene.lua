@@ -4,7 +4,10 @@
 
 Scene object
 
-Scenes contain elements
+A Scene is just a regular LUI Element,
+that contains other LUI Elements.
+
+Scenes
 
 ]]
 
@@ -13,34 +16,47 @@ Scenes contain elements
 local path = (...):gsub('%.[^%.]+$', '')
 
 local util = require(path .. ".util")
+local Element = require(path .. ".ElementClass")
 
-local Scene = util.Class()
+
+local Scene = Element()
 
 
 function Scene:init()
+    self.focusedElement = false
     self.elements = {}
-end
 
-
-function Scene:addElement(rootElem)
-    assert(not rootElem:isContained(), "This element is already contained by another Scene, or is a child of another element!")
-    assert(rootElem:isRoot(), "Only root elements can be added to scenes")
-    table.insert(self.elements, rootElem)
-    rootElem:setContained(true)
+    self:makeRoot()
 end
 
 
 
-function Scene:removeElement(rootElem)
+-- Private method!
+function Scene:_unfocus()
+    self.focusedElement = false 
+end
+
+
+-- Private method!
+function Scene:_focus(elem)
+    -- Focuses an element.
+    -- Think like, a text box, ready to be typed in.
+
+    -- only 1 element can be focused at a time:
+    local prevElement = self:getFocused()
+    if prevElement then
+        prevElement:unfocus()
+    end
+
+    -- bring root element to top:
+    local rootElem = elem:getRoot()
     util.listDelete(self.elements, rootElem)
-    rootElem:setContained(false)
-end
-
-
-function Scene:focus(rootElem)
-    util.listDelete(self.elements, rootElem)
     table.insert(self.elements, rootElem)
+    
+    self.focusedElement = elem
 end
+
+
 
 
 function Scene:hasElement(element)
@@ -58,13 +74,12 @@ function Scene:render()
 end
 
 
-local function getFocused(self)
-    local len = #self.elements
-    return self.elements[len]
+function Scene:getFocused()
+    return self.focusedElement
 end
 
 local function tryCallFocused(self, method, ...)
-    local focused = getFocused(self)
+    local focused = self:getFocused(self)
     if focused then
         focused[method](focused, ...)
     end
@@ -79,16 +94,12 @@ end
 
 
 
-local FOCUS_BUTTON = 1
 
 function Scene:mousepressed(mx, my, button, istouch, presses)
     for i=#self.elements, 1, -1 do
         local elem = self.elements[i]
         if elem:contains(mx, my) then
             elem:mousepressed(mx, my, button, istouch, presses)
-            if button == FOCUS_BUTTON then
-                self:focus(elem)
-            end
         end
     end
 end

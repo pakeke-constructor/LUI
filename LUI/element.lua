@@ -22,29 +22,27 @@ local function forceDispatchToChildren(self, funcName, ...)
 end
 
 
-function Element:setContained(isContained)
-    self._isContained = isContained
+function Element:setParent(parent)
+    self._parent = parent
 end
 
-function Element:isContained()
-    return self._isContained
+function Element:getParent()
+    return self._parent
 end
 
 
 
 function Element:setup()
     -- called on initialization
-    self._parent = false
-
     self._childElementHash = {--[[
         [childElem] -> true
         for checking if we have an elem or not
     ]]}
     self._children = {}
 
-    self._isContained = false
-    -- whether `self` is inside a Scene or another Element.
-    -- Mainly used for
+    self._parent = false
+    -- Parent of this element.
+    -- Could be a Scene, or a parent Element
 
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
@@ -55,7 +53,9 @@ function Element:setup()
         whether this element is being clicked on by a mouse button
     ]]}
 
-    self._focusedChild = nil -- only used by root elements
+    self._isRoot = false
+    -- if this is set to true, then we will accept this element as a "root".
+    -- For example, a `Scene` is regarded as a root element.
 end
 
 
@@ -65,11 +65,24 @@ function Element:isRoot()
 end
 
 
+function Element:makeRoot()
+    --[[
+        Denotes this element as a "Root" element.
+        This basically tells us that we can draw this element in a detatched fashion.
+
+        (For example, a "Scene" is a good example of a "Root" element)
+    ]]
+    self._isRoot = true
+end
+
+
 
 local function setParent(childElem, parent)
-    childElem._parent = parent
-    local isContained = (parent and true) or false
-    childElem:setContained(childElem, isContained)
+    if parent and childElem:getParent() then
+        error("Element was already contained inside something else!")
+    end
+    assert(childElem ~= parent, "???")
+    childElem:setParent(childElem, parent)
 end
 
 
@@ -163,7 +176,7 @@ end
 
 
 function Element:render(x,y,w,h)
-    if not self:isContained() then
+    if not self:getParent() then
         error("Attempt to render uncontained element!", 2)
     end
     deactivateheirarchy(self)
@@ -276,52 +289,59 @@ function Element:getChildren()
 end
 
 
+local function maxDepthError()
+    error("max depth reached in element heirarchy (Element is a child of itself?)")
+end
+
+
 local MAX_DEPTH = 10000
 
 function Element:getRoot()
     -- gets the root ancestor of this element
     local elem = self
     for _=1,MAX_DEPTH do
-        if elem._parent then
-            elem = elem._parent
+        local parent = elem:getParent()
+        if parent then
+            elem = parent
         else
             return elem -- its the root!
         end
     end
-    error("max depth reached in element heirarchy (child is a parent of itself?)")
+    maxDepthError()
 end
 
 
 
-local function setRootFocus(self, focus)
-    local root = self:getRoot()
-    local old = root._focusedChild
-    if old then
-        -- unfocus old element
-        root._focusedChild = nil
-        old:unfocus()
-    end
-    root._focusedChild = focus
+function Element:setFocusedChild(elem)
+    
 end
+
 
 
 function Element:focus()
-    if self._focused then
-        return -- idempotency
+    if self:isFocused() then
+        return
     end
-    setRootFocus(self, self)
-    self._focused = true
+
     util.tryCall(self.onFocus, self)
+    local root = self:getRoot()
+    if scene then
+        scene:_focus(self)
+    end
 end
 
 
+
 function Element:unfocus()
-    if not self._focused then
-        return -- idempotency
+    if not self:isFocused() then
+        return
     end
-    setRootFocus(self, nil)
-    self._focused = false
+
     util.tryCall(self.onUnfocus, self)
+    local scene = self:getRoot()
+    if scene then
+        scene:_unfocus()
+    end
 end
 
 
@@ -343,7 +363,8 @@ end
 
 
 function Element:isFocused()
-    return self._focused
+    local root = self:getScene()
+    return root:getFocusedChild() == self
 end
 
 
