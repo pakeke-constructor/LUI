@@ -20,15 +20,16 @@ local SCROLL_WIDTH = 20
 
 function ScrollBox:init(args)
     assert(args.content, "No content given!")
-    args.content:setParent(self)
 
     self.scrollWidth = args.scrollWidth or SCROLL_WIDTH
 
+    self:addChild(args.content)
     self.content = args.content
 
-    self.scroll = elements.ScrollBar(self, {
+    self.scroll = elements.ScrollBar({
         sensitivity = args.sensitivity
     })
+    self:addChild(self.scroll)
 end
 
 

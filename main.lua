@@ -27,7 +27,7 @@ end
 
 local scene = LUI.Scene()
 
-local e = elements.Menu(false)
+local e = elements.Menu()
 e:setView(getScreenView())
 scene:addElement(e)
 

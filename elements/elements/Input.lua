@@ -6,9 +6,10 @@ local DEFAULT_MAX_LENGTH = 50
 
 function Input:init(args)
     args = args or {}
-    self.text = elements.Text(self, {
+    self.text = elements.Text({
         text = ""
     })
+    self:addChild(self.text)
     self.onSubmit = args.onSubmit
     self.maxLength = args.maxLength or DEFAULT_MAX_LENGTH
 end

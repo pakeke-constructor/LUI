@@ -22,15 +22,18 @@ local function forceDispatchToChildren(self, funcName, ...)
 end
 
 
-function Element:setup(parent)
+
+
+function Element:setup()
     -- called on initialization
-    if parent then
-        self:setParent(parent)
-    else
-        self._isRoot = true
-    end
+    self._parent = false
+
+    self._childElementHash = {--[[
+        [childElem] -> true
+        for checking if we have an elem or not
+    ]]}
     self._children = {}
-    self._parent = parent
+
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
     self._active = false
@@ -45,7 +48,37 @@ end
 
 
 function Element:isRoot()
-    return self._isRoot
+    -- element with no parent = root element
+    return not self._parent
+end
+
+
+
+local function setParent(childElem, parent)
+    childElem._parent = parent
+end
+
+
+function Element:addChild(childElem)
+    table.insert(self._children, childElem)
+    self._childElementHash[childElem] = true
+    setParent(childElem, self)
+    return childElem
+end
+
+
+function Element:removeChild(childElem)
+    if not self:hasChild(childElem) then
+        return
+    end
+    util.listDelete(self._children, childElem)
+    self._childElementHash[childElem] = nil
+    setParent(childElem, nil)
+end
+
+
+function Element:hasChild(childElem)
+    return self._childElementHash[childElem]
 end
 
 
@@ -201,22 +234,6 @@ function Element:resize(x,y)
 end
 
 
-
-function Element:detach()
-    local parent = self._parent
-    if parent then
-        util.listDelete(parent._children, self)
-    end
-end
-
-
-
-function Element:setParent(parent)
-    self:detach()
-    self._isRoot = false -- no longer root!
-    self._parent = parent
-    table.insert(parent._children, self)
-end
 
 
 function Element:getParent()

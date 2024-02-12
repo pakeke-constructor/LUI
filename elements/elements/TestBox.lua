@@ -9,7 +9,9 @@ function TestBox:init()
 
     self.buttons = {}
     for _=1, NUM_BUTTO do
-        table.insert(self.buttons, elements.Button(self, {}))
+        local button = elements.Button({})
+        table.insert(self.buttons, button)
+        self:addChild(button)
     end
 end
 

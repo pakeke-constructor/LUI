@@ -15,9 +15,10 @@ end
 
 local function ensureTextElement(self)
     if not self.textElement then
-        self.textElement = elements.Text(self, {
+        self.textElement = elements.Text({
             text = self.text
         })
+        self:addChild(self.textElement)
     end
 
     if self.textElement.text ~= self.text then

@@ -66,7 +66,9 @@ function ScrollBar:init(args)
     self.position = 0
     self.totalSize = 0
     self.sensitivity = args.sensitivity or DEFAULT_SENSITIVITY
-    self.thumb = ScrollThumb(self, args)
+
+    self.thumb = ScrollThumb(args)
+    self:addChild(self.thumb)
 end
 
 

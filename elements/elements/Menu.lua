@@ -4,21 +4,25 @@ local Menu = LUI.Element()
 
 
 function Menu:init()
-    self.button = elements.Button(self, {
+    self.button = elements.Button({
         text = "Button!"
     })
+    self:addChild(self.button)
     
-    self.image = elements.Image(self, {
+    self.image = elements.Image({
         image = love.graphics.newImage("examples/cat.jpg")
     })
+    self:addChild(self.image)
 
-    self.text = elements.Text(self, {
+    self.text = elements.Text({
         text = "hi"
     })
+    self:addChild(self.text)
 
-    self.input = elements.Input(self)
+    self.input = elements.Input()
+    self:addChild(self.input)
 
-    self.slider = elements.Slider(self, {
+    self.slider = elements.Slider({
         min = 5,
         max = 30,
         startValue = 10,
@@ -27,13 +31,17 @@ function Menu:init()
             par.sliderText:setText(string.format("Slider: %.2f", value))
         end
     })
-    self.sliderText = elements.Text(self, {
+    self:addChild(self.slider)
+
+    self.sliderText = elements.Text({
         text = "no value"
     })
+    self:addChild(self.sliderText)
 
-    self.scrollBox = elements.ScrollBox(self, {
+    self.scrollBox = elements.ScrollBox({
         content = elements.TestBox(self)
     })
+    self:addChild(self.scrollBox)
 end
 
 
