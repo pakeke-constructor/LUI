@@ -80,7 +80,8 @@ function Slider:init(args)
     self.value = clamp(0, self.min, self.max)
     self.position = 0
 
-    self.thumb = Thumb(self)
+    self.thumb = Thumb()
+    self:addChild(self.thumb)
 end
 
 
@@ -90,7 +91,7 @@ local THUMB_RATIO = 4
 function Slider:onRender(x,y,w,h)
     local region = Region(x,y,w,h)
     love.graphics.setColor(0.5,0.5,0.5)
-    local lineRegion = region:padRatio(0,0.4,0,0.4)
+    local lineRegion = region:pad(0,0.4,0,0.4)
     mainStyle:darkRectangle(lineRegion:get())
     
     local thumbWidth = w/THUMB_RATIO

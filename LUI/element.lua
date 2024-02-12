@@ -22,6 +22,14 @@ local function forceDispatchToChildren(self, funcName, ...)
 end
 
 
+function Element:setContained(isContained)
+    self._isContained = isContained
+end
+
+function Element:isContained()
+    return self._isContained
+end
+
 
 
 function Element:setup()
@@ -33,6 +41,10 @@ function Element:setup()
         for checking if we have an elem or not
     ]]}
     self._children = {}
+
+    self._isContained = false
+    -- whether `self` is inside a Scene or another Element.
+    -- Mainly used for
 
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
     self._focused = false
@@ -56,10 +68,25 @@ end
 
 local function setParent(childElem, parent)
     childElem._parent = parent
+    local isContained = (parent and true) or false
+    childElem:setContained(childElem, isContained)
+end
+
+
+
+
+local function assertElementValid(elem)
+   if type(elem) ~= "table" or (not elem.render) then
+        error("not valid LUI element: " .. tostring(elem))
+    end
 end
 
 
 function Element:addChild(childElem)
+    if self:hasChild(childElem) then
+        return --already has.
+    end
+    assertElementValid(childElem)
     table.insert(self._children, childElem)
     self._childElementHash[childElem] = true
     setParent(childElem, self)
@@ -136,6 +163,9 @@ end
 
 
 function Element:render(x,y,w,h)
+    if not self:isContained() then
+        error("Attempt to render uncontained element!", 2)
+    end
     deactivateheirarchy(self)
     activate(self)
 

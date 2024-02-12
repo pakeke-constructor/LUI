@@ -23,14 +23,17 @@ end
 
 
 function Scene:addElement(rootElem)
+    assert(not rootElem:isContained(), "This element is already contained by another Scene, or is a child of another element!")
     assert(rootElem:isRoot(), "Only root elements can be added to scenes")
     table.insert(self.elements, rootElem)
+    rootElem:setContained(true)
 end
 
 
 
 function Scene:removeElement(rootElem)
     util.listDelete(self.elements, rootElem)
+    rootElem:setContained(false)
 end
 
 

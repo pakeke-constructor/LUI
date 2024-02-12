@@ -5,13 +5,6 @@ local Element = require(path .. ".element")
 
 
 
-local function assertElementValid(elem)
-   if type(elem) ~= "table" or (not elem.render) then
-        error("not valid LUI element: " .. tostring(elem))
-    end
-end
-
-
 local function initElement(elementClass, ...)
     --[[
         if `parent` is false, then the element is a root element.
