@@ -44,7 +44,6 @@ function Element:setup()
     -- Could be a Scene, or a parent Element
 
     self._view = {x=0,y=0,w=0,h=0} -- last seen view
-    self._focused = false
     self._active = false
     self._hovered = false
     self._clickedOnBy = {--[[
@@ -52,9 +51,11 @@ function Element:setup()
         whether this element is being clicked on by a mouse button
     ]]}
 
-    self._isRoot = false
+    self._denotedAsScene = false
     -- if this is set to true, then we will accept this element as a "root".
     -- For example, a `Scene` is regarded as a root element.
+
+    self._focusedChild = false
 end
 
 
@@ -64,14 +65,14 @@ function Element:isRoot()
 end
 
 
-function Element:makeRoot()
+function Element:denoteAsRoot()
     --[[
         Denotes this element as a "Root" element.
         This basically tells us that we can draw this element in a detatched fashion.
 
         (For example, a "Scene" is a good example of a "Root" element)
     ]]
-    self._isRoot = true
+    self._denotedAsScene = true
 end
 
 
@@ -177,7 +178,7 @@ end
 
 
 function Element:render(x,y,w,h)
-    if not self:getParent() then
+    if self:isRoot() and (not self._denotedAsScene) then
         error("Attempt to render uncontained element!", 2)
     end
     deactivateheirarchy(self)
@@ -346,6 +347,12 @@ end
 
 
 
+local function setFocusedChild(self, childElem)
+    self._focusedChild = childElem
+end
+
+
+
 function Element:focus()
     if self:isFocused() then
         return
@@ -354,7 +361,7 @@ function Element:focus()
     util.tryCall(self.onFocus, self)
     local root = self:getRoot()
     if root then
-        root:setFocusedChild(self)
+        setFocusedChild(root, self)
     end
 end
 
@@ -368,16 +375,20 @@ function Element:unfocus()
     util.tryCall(self.onUnfocus, self)
     local root = self:getRoot()
     if root then
-        root:setFocusedChild(nil)
+        setFocusedChild(root, nil)
     end
 end
 
 
 function Element:isFocused()
-    local root = self:getScene()
+    local root = self:getRoot()
     return root:getFocusedChild() == self
 end
 
+
+function Element:getFocusedChild()
+    return self._focusedChild
+end
 
 
 

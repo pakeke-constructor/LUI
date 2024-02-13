@@ -11,7 +11,7 @@ Scenes
 
 ]]
 
-
+--[===[
 
 local path = (...):gsub('%.[^%.]+$', '')
 
@@ -138,3 +138,4 @@ end
 
 return Scene
 
+]===]
