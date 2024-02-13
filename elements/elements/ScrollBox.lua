@@ -41,7 +41,7 @@ function ScrollBox:onRender(x,y,w,h)
     -- common idiom to create fixed-size splits:
     local content, scroll = region:splitHorizontal(w-self.scrollWidth, self.scrollWidth)
 
-    local _, contentHeight = self.content:getPreferredSize()
+    local _, contentHeight = self.content:getPreferredHeight()
     assert(contentHeight, "Content element needs a preferred height")
     
     if h < contentHeight then

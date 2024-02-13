@@ -70,9 +70,4 @@ function Menu:onRender(x,y,w,h)
 end
 
 
-function Menu:onResize(w,h)
-    self:setPreferredSize(w,h)
-end
-
-
 return Menu

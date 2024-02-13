@@ -4,8 +4,13 @@ local TestBox = LUI.Element()
 
 local NUM_BUTTO = 10
 
+
+local function setPreferredHeight(self, x)
+    self.preferredHeight = x
+end
+
 function TestBox:init()
-    self:setPreferredSize(nil, 1000)
+    setPreferredHeight(nil, 1000)
 
     self.buttons = {}
     for _=1, NUM_BUTTO do
@@ -16,10 +21,14 @@ function TestBox:init()
 end
 
 
+function TestBox:getPreferredHeight()
+    return self.preferredHeight
+end
+
+
 function TestBox:onRender(x,y,w,h)
     local r = Region(x,y,w,h):padPixels(20)
-    local height = 300 + 200 * math.sin(love.timer.getTime()/4)
-    self:setPreferredSize(nil, height)
+    setPreferredHeight(self, 300 + 200 * math.sin(love.timer.getTime()/4))
     love.graphics.setColor(1,0,0)
     love.graphics.setLineWidth(10)
     love.graphics.rectangle("line",r:get())

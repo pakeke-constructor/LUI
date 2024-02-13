@@ -33,14 +33,12 @@ function Text:init(args)
     
     self.scale = args.scale or 1
     self.align = args.align or "left"
-    self:setPreferredSize(getTextSize(self))
 end
 
 
 
 function Text:onRender(x,y,w,h)
     local tw, th = getTextSize(self)
-    self:setPreferredSize(tw, th)
 
     -- scale text to fit box
     local limit = self.wrap or tw
