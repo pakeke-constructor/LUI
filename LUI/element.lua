@@ -51,7 +51,7 @@ function Element:setup()
         whether this element is being clicked on by a mouse button
     ]]}
 
-    self._denotedAsScene = false
+    self._denotedAsRoot = false
     -- if this is set to true, then we will accept this element as a "root".
     -- For example, a `Scene` is regarded as a root element.
 
@@ -65,14 +65,14 @@ function Element:isRoot()
 end
 
 
-function Element:denoteAsRoot()
+function Element:makeRoot()
     --[[
         Denotes this element as a "Root" element.
         This basically tells us that we can draw this element in a detatched fashion.
 
         (For example, a "Scene" is a good example of a "Root" element)
     ]]
-    self._denotedAsScene = true
+    self._denotedAsRoot = true
 end
 
 
@@ -178,7 +178,7 @@ end
 
 
 function Element:render(x,y,w,h)
-    if self:isRoot() and (not self._denotedAsScene) then
+    if self:isRoot() and (not self._denotedAsRoot) then
         error("Attempt to render uncontained element!", 2)
     end
     deactivateheirarchy(self)

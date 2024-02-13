@@ -27,7 +27,7 @@ end
 
 
 local scene = elements.Menu()
-scene:denoteAsRoot()
+scene:makeRoot()
 
 
 function love.draw()
