@@ -8,15 +8,17 @@ local Element = {}
 
 
 local function dispatchToChildren(self, funcName, ...)
-    for _, child in ipairs(self._children) do
+    for _, child in ipairs(self:getChildren()) do
         if child:isActive() then
             child[funcName](child, ...)
         end
     end
 end
 
+
+
 local function forceDispatchToChildren(self, funcName, ...)
-    for _, child in ipairs(self._children) do
+    for _, child in ipairs(self:getChildren()) do
         child[funcName](child, ...)
     end
 end
@@ -103,6 +105,7 @@ function Element:addChild(childElem)
     table.insert(self._children, childElem)
     self._childElementHash[childElem] = true
     setParent(childElem, self)
+    util.tryCall(self.onAddChild, self)
     return childElem
 end
 
@@ -114,6 +117,7 @@ function Element:removeChild(childElem)
     util.listDelete(self._children, childElem)
     self._childElementHash[childElem] = nil
     setParent(childElem, nil)
+    util.tryCall(self.onRemoveChild, self)
 end
 
 
@@ -189,6 +193,21 @@ end
 
 
 
+local function getCapturedChild(self, x, y)
+    -- returns the child that is "captured" by position (x,y),
+    -- (Or nil if there is none.)
+    local children = self:getChildren()
+    -- iterate backwards, because last child is the "top" child.
+    for i=#children, 1, -1 do
+        local child = children[i]
+        if child:contains(x, y) and child:isActive() then
+            return child
+        end
+    end
+end
+
+
+
 function Element:mousepressed(mx, my, button, istouch, presses)
     -- should be called when mouse clicks on this element
     if not self:contains(mx,my) then
@@ -197,10 +216,9 @@ function Element:mousepressed(mx, my, button, istouch, presses)
     util.tryCall(self.onMousePress, self, mx, my, button, istouch, presses)
     self._clickedOnBy[button] = true
 
-    for _, child in ipairs(self._children) do
-        if child:contains(mx, my) and child:isActive() then
-            child:mousepressed(mx, my, button, istouch, presses)
-        end
+    local child = getCapturedChild(self, mx, my)
+    if child then
+        child:mousepressed(mx, my, button, istouch, presses)
     end
     return true -- consumed!
 end
@@ -221,13 +239,14 @@ end
 
 
 local function updateHover(self, mx, my)
+    local isHovered = self:contains(mx, my)
     if self._hovered then
-        if not self:contains(mx, my) then
+        if not isHovered then
             util.tryCall(self.onEndHover, self, mx, my)
             self._hovered = false
         end
     else -- not being hovered:
-        if self:contains(mx, my) then
+        if isHovered then
             util.tryCall(self.onStartHover, self, mx, my)
             self._hovered = true
         end
@@ -325,8 +344,8 @@ function Element:focus()
 
     util.tryCall(self.onFocus, self)
     local root = self:getRoot()
-    if scene then
-        scene:_focus(self)
+    if root then
+        root:setFocusedChild(self)
     end
 end
 
@@ -338,11 +357,20 @@ function Element:unfocus()
     end
 
     util.tryCall(self.onUnfocus, self)
-    local scene = self:getRoot()
-    if scene then
-        scene:_unfocus()
+    local root = self:getRoot()
+    if root then
+        root:setFocusedChild(nil)
     end
 end
+
+
+function Element:isFocused()
+    local root = self:getScene()
+    return root:getFocusedChild() == self
+end
+
+
+
 
 
 function Element:getPreferredSize()
@@ -360,12 +388,6 @@ function Element:setPreferredSize(w,h)
     end
 end
 
-
-
-function Element:isFocused()
-    local root = self:getScene()
-    return root:getFocusedChild() == self
-end
 
 
 function Element:isHovered()

@@ -23,8 +23,7 @@ local Scene = Element()
 
 
 function Scene:init()
-    self.focusedElement = false
-    self.elements = {}
+    self._focusedElement = false
 
     self:makeRoot()
 end
@@ -33,7 +32,18 @@ end
 
 -- Private method!
 function Scene:_unfocus()
-    self.focusedElement = false 
+    self._focusedElement = false 
+end
+
+
+local function setTop(self, elem)
+    -- sets `elem` to be rendered last.
+    local children = self.getChildren()
+    if not util.find(children, elem) then
+        return
+    end
+    util.listDelete(children, elem)
+    table.insert(children, elem)
 end
 
 
@@ -50,23 +60,14 @@ function Scene:_focus(elem)
 
     -- bring root element to top:
     local rootElem = elem:getRoot()
-    util.listDelete(self.elements, rootElem)
-    table.insert(self.elements, rootElem)
+    setTop(self, rootElem)
     
-    self.focusedElement = elem
+    self._focusedElement = elem
 end
 
 
 
-
-function Scene:hasElement(element)
-    return util.find(element)
-end
-
-
-
-
-function Scene:render()
+function Scene:render(x,y,w,h)
     for i=#self.elements, 1, -1 do
         local elem = self.elements[i]
         elem:render(elem:getView())
@@ -75,7 +76,7 @@ end
 
 
 function Scene:getFocused()
-    return self.focusedElement
+    return self._focusedElement
 end
 
 local function tryCallFocused(self, method, ...)
@@ -119,7 +120,7 @@ function Scene:keypressed(key, scancode, isrepeat)
 end
 
 function Scene:keyreleased(key, scancode)
-    tryCallFocused(self, "keyreleased", key, scancode)
+    callForAll(self, "keyreleased", key, scancode)
 end
 
 function Scene:textinput(text)
