@@ -25,15 +25,13 @@ local function getScreenView()
 end
 
 
-local scene = LUI.Scene()
 
-local e = elements.Menu()
-e:setView(getScreenView())
-scene:addElement(e)
+local scene = elements.Menu()
+e:setView()
 
 
 function love.draw()
-    scene:render()
+    scene:render(getScreenView())
 end
 
 function love.mousepressed(mx, my, button, istouch, presses)

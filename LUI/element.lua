@@ -24,9 +24,6 @@ local function forceDispatchToChildren(self, funcName, ...)
 end
 
 
-function Element:setParent(parent)
-    self._parent = parent
-end
 
 function Element:getParent()
     return self._parent
@@ -84,7 +81,7 @@ local function setParent(childElem, parent)
         error("Element was already contained inside something else!")
     end
     assert(childElem ~= parent, "???")
-    childElem:setParent(childElem, parent)
+    childElem._parent = parent
 end
 
 
@@ -238,17 +235,24 @@ end
 
 
 
+
+
+local function endHover(self, mx, my)
+    util.tryCall(self.onEndHover, self, mx, my)
+    self._hovered = false
+end
+
+
+local function startHover(self, mx, my)
+    util.tryCall(self.onStartHover, self, mx, my)
+    self._hovered = true
+end
+
 local function updateHover(self, mx, my)
-    local isHovered = self:contains(mx, my)
     if self._hovered then
-        if not isHovered then
-            util.tryCall(self.onEndHover, self, mx, my)
-            self._hovered = false
-        end
-    else -- not being hovered:
-        if isHovered then
-            util.tryCall(self.onStartHover, self, mx, my)
-            self._hovered = true
+        if not self:contains(mx,my) then
+            -- then its no longer hovering!
+            endHover(self, mx, my)
         end
     end
 end
@@ -259,6 +263,15 @@ function Element:mousemoved(mx, my, dx, dy, istouch)
     util.tryCall(self.onMouseMoved, self, mx, my, dx, dy, istouch)
 
     updateHover(self, mx, my)
+    for _,child in ipairs(self:getChildren()) do
+        updateHover(child, mx, my)
+    end
+
+    local child = getCapturedChild(self, mx, my)
+    if child then
+        startHover(child, mx, my)
+    end
+
     dispatchToChildren(self, "mousemoved", mx, my, dx, dy, istouch)
 end
 
@@ -330,10 +343,6 @@ function Element:getRoot()
 end
 
 
-
-function Element:setFocusedChild(elem)
-    
-end
 
 
 
